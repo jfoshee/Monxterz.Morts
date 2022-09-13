@@ -1,3 +1,9 @@
+# Game Master
+
+This directory contains the scripts for the Game Master. 
+The Game Master controls the Game and enforces rules around state changes.
+
+The scripts are executed on a Monxterz.StatePlatform server which is a back-end for persistent worlds.
 
 ## Need from Game State System
 
