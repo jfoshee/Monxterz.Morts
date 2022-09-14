@@ -1,0 +1,65 @@
+﻿@page "/login"
+@inject IChangeUserService changeUserService;
+@inject NavigationManager navigationManager;
+@inject IGameStateClient gameStateClient;
+@inject ILocalStorageService localStorageService;
+@inject IGameBearerTokenProvider gameTokenProvider;
+
+<h3>Login</h3>
+
+<form @onsubmit="LoginUser">
+    <div class="mb-3">
+        <label for="inputUserId" class="form-label">
+            User ID
+        </label>
+        <div class="input-group has-validation">
+            @*<span class="input-group-text" id="inputGroupPrepend3">@@</span>*@
+            <input type="text" class="form-control @isInvalid()" id="inputUserId" @bind="userId" required>
+            <div id="inputUserIdFeedback" class="invalid-feedback">
+                @errorMessage
+            </div>
+        </div>
+    </div>
+    <button type="button" class="btn btn-primary" @onclick="LoginUser">
+        Login
+    </button>
+</form>
+
+@code {
+    string? userId;
+    string? errorMessage;
+
+    async Task LoginUser()
+    {
+        errorMessage = null;
+        if (userId is null)
+        {
+            errorMessage = "You cannot login with a null User ID.";
+            return;
+        }
+        userId = userId.Trim();
+        try
+        {
+            await changeUserService.ChangeUserAsync(userId);
+            var response = await gameStateClient.GetAuthTestAsync();
+            if (response?.IsAuthenticated == true && response?.UserId == userId)
+            {
+                // Save JWT Token
+                // TODO: Break direct dependence on IGameBearerTokenProvider
+                var token = gameTokenProvider.BearerToken;
+                await localStorageService.SetItemAsync("Token", gameTokenProvider.BearerToken);
+                await localStorageService.SetItemAsync("UserID", gameTokenProvider.UserId);
+                navigationManager.NavigateTo("/");
+            }
+            else
+                errorMessage = "The authentication test failed. The user could not be authenticated.";
+        }
+        catch (ApiException apiException)
+        {
+            errorMessage = apiException.SimpleMessage();
+        }
+    }
+
+    // https://getbootstrap.com/docs/5.0/forms/validation/#server-side
+    string isInvalid() => errorMessage is not null ? "is-invalid" : "";
+}

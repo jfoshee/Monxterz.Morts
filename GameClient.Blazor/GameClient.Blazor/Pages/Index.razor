@@ -1,3 +1,11 @@
 ﻿@page "/"
 
 <h1>Hello, world!</h1>
+
+@if (user is not null)
+{
+    <p>
+        Hello,
+        @user.DisplayName
+    </p>
+}
