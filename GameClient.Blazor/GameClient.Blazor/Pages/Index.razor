@@ -9,15 +9,22 @@
 else
 {
     <p>
-        Must login...
+        Checking authentication...
     </p>
 }
-
+<style>
+    .game-grid {
+        grid-template: repeat(@gridSize, 1fr) / repeat(@gridSize, 1fr);
+    }
+</style>
 <div class="game-grid">
-    @for (int i = 0; i < 25; i++)
+    @for (int row = 0; row < gridSize; row++)
     {
-        <div style="border: solid 1px">
-            @i
-        </div>
+        for (int col = 0; col < gridSize; col++)
+        {
+            <div style="border: solid 1px">
+                @Location(col, row)
+            </div>
+        }
     }
 </div>

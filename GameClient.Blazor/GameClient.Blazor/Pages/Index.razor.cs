@@ -13,7 +13,11 @@ public partial class Index
     [Inject] NavigationManager navigationManager { get; set; } = default!;
     [Inject] IGameTestHarness game { get; set; } = default!;
     [Inject] IGameStateClient gameStateClient { get; set; } = default!;
+
     private GameEntityState? user;
+    private const int plane = 0;
+    private const int gridSize = 7;
+    private (int x, int y) center = (0x80, 0x80);
 
     protected override async Task OnInitializedAsync()
     {
@@ -28,5 +32,16 @@ public partial class Index
             await game.InitAsync();
             user = await gameStateClient.GetUserAsync() ?? throw new Exception("Failed to fetch current user entity");
         }
+    }
+
+    /// <summary>
+    /// Returns the location string inside the GameMaster's region
+    /// for a specific on-screen grid cell
+    /// </summary>
+    string Location(int col, int row)
+    {
+        var x = col + center.x - gridSize / 2;
+        var y = row + center.y - gridSize / 2;
+        return $"{plane:X2}:{x:X2}:{y:X2}";
     }
 }

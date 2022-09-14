@@ -1,6 +1,6 @@
 ﻿.game-grid {
     display: grid;
-    grid-template: repeat(5, 20%) / repeat(5, 20%);
+/*  grid-template: defined in Razor so controlled by code */
     width: calc(100vw - 16px);
     height: calc(100vw - 16px);
     min-width: 300px;
