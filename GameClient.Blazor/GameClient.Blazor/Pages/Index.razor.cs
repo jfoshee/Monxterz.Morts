@@ -1,5 +1,6 @@
 ﻿using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
+using Monxterz.StatePlatform;
 using Monxterz.StatePlatform.Client;
 using Monxterz.StatePlatform.ClientServices;
 
@@ -13,11 +14,14 @@ public partial class Index
     [Inject] NavigationManager navigationManager { get; set; } = default!;
     [Inject] IGameTestHarness game { get; set; } = default!;
     [Inject] IGameStateClient gameStateClient { get; set; } = default!;
+    [Inject] IGameMasterService gameMasterService { get; set; } = default!;
 
     private GameEntityState? user;
     private const int plane = 0;
     private const int gridSize = 7;
     private (int x, int y) center = (0x80, 0x80);
+    private IList<GameEntityState>? entities;
+    private IEnumerable<string?>? Names => entities?.Select(e => $"{e.DisplayName} {e.SystemState.Location}");
 
     protected override async Task OnInitializedAsync()
     {
@@ -43,5 +47,15 @@ public partial class Index
         var x = col + center.x - gridSize / 2;
         var y = row + center.y - gridSize / 2;
         return $"{plane:X2}:{x:X2}:{y:X2}";
+    }
+
+    async Task OnClick(int col, int row)
+    {
+        entities = null;
+        var gameMaster = await gameMasterService.GetGameMaster();
+        var region = gameMaster.SystemState.ControlledRegion!;
+        var location = Region.Combine(region, Location(col, row));
+        await game.Move(user!, location);
+        entities = await gameStateClient.GetEntitiesNearbyAsync();
     }
 }

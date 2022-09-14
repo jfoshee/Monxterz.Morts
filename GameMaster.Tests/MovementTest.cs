@@ -16,6 +16,20 @@ public class MovementTest
         Region.GetChunks(location).Skip(4).Should().Equal("00", "80", "80");
     }
 
+    [Theory(DisplayName = "Player can move anywhere"), MortsTest]
+    public async Task MovePlayer(IGameTestHarness game, IGameMasterService gameMasterService)
+    {
+        // At this time players can "occupy" any cell... Might need to change this later.
+        var player = await game.NewCurrentPlayer();
+        var gameMaster = await gameMasterService.GetGameMaster();
+        var region = gameMaster.SystemState.ControlledRegion!;
+        var newLocation = Region.Combine(region, "00:42:24");
+
+        await game.Move(player, newLocation);
+
+        player.SystemState.Location.Should().Be(newLocation);
+    }
+
     [Theory(DisplayName = "Move nowhere"), MortsTest]
     public async Task MoveNowhere(IGameTestHarness game)
     {

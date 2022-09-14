@@ -22,9 +22,22 @@ else
     {
         for (int col = 0; col < gridSize; col++)
         {
-            <div style="border: solid 1px">
+            // Must not capture the loop variable in the lambda
+            int c = col;
+            int r = row;
+            <div style="border: solid 1px" @onclick="_ => OnClick(c, r)">
                 @Location(col, row)
             </div>
         }
     }
 </div>
+
+@if (Names is not null)
+{
+    <ul>
+        @foreach (var name in Names)
+        {
+            <li>@name</li>
+        }
+    </ul>
+}

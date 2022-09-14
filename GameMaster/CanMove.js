@@ -4,6 +4,9 @@
  * Throws an error for illegal moves.
  */
 function canMove(context, oldLocation, newLocation, oldRegion, newRegion) {
+    let state = context.entity.customStatePublic[context.authorId];
+    if (state?.type !== 'Character')
+        return;
     if (oldRegion !== newRegion)
         throw Error('Changing regions is not implemented');
     CheckDistance(oldLocation, newLocation, 0);
