@@ -2,15 +2,15 @@
 @if (user is not null)
 {
     <p>
-        Hello,
-        @user.DisplayName
-    </p>
+    Hello,
+    @user.DisplayName
+</p>
 }
 else
 {
     <p>
-        Checking authentication...
-    </p>
+    Checking authentication...
+</p>
 }
 <style>
     .game-grid {
@@ -35,15 +35,15 @@ else
     }
 </div>
 
-@if (Names is not null)
-{
-    <p>
-        In the area:
-    </p>
-    <ul>
+<div class="rpgui-content">
+    <div class="rpgui-container framed" style="">
+        <h2>In the area:</h2>
         @foreach (var name in Names)
         {
-            <li>@name</li>
+            <span style="font-size: 0.5em;">
+                @name
+                <br />
+            </span>
         }
-    </ul>
-}
+    </div>
+</div>

@@ -21,7 +21,9 @@ public partial class Index
     private const int gridSize = 7;
     private (int x, int y) center = (0x80, 0x80);
     private IEnumerable<GameEntityState>? entities;
-    private IEnumerable<string?>? Names => entities?.Select(e => $"{e.DisplayName} {e.SystemState.Location} ({e.Id})");
+    private IEnumerable<string?> Names => 
+        entities?.Select(e => $"{e.DisplayName} {e.SystemState.Location} ({e.Id})")
+        ?? Array.Empty<string>();
     private ILookup<string, GameEntityState>? entityMap;
     private string gameRegion = "";
 

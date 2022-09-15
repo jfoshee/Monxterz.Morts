@@ -206,11 +206,12 @@ inside your html file.
   margin: 0 0 0 0;
   width: 100%;
   height: 100%;
-  left: 0px;
+  /* left: 0px;
   top: 0px;
   position: fixed;
-  overflow: hidden;
-  font-size: 0.8em; }
+  overflow: hidden; */
+  font-size: 0.8em; 
+}
 
 /* general rules to apply on anything inside the content */
 .rpgui-content * {
@@ -243,9 +244,10 @@ inside your html file.
 /* game div without background image*/
 .rpgui-container {
   /* position style and default z */
-  position: fixed;
-  z-index: 10;
-  overflow: show; }
+  /* position: fixed; */
+  /* z-index: 10; */
+  /* overflow: show;  */
+}
 
 /* game div with background image*/
 .rpgui-container.framed {
