@@ -11,7 +11,6 @@ function canMove(context, oldLocation, newLocation, oldRegion, newRegion) {
         throw Error('Changing regions is not implemented');
     CheckDistance(oldLocation, newLocation, 0);
     CheckDistance(oldLocation, newLocation, 1);
-    // TODO: Check distance
     // TODO: Check plane (chunk[4])
 }
 

@@ -17,11 +17,13 @@ public partial class Index
     [Inject] IGameMasterService gameMasterService { get; set; } = default!;
 
     private GameEntityState? user;
-    private const int plane = 0;
+    private const byte plane = 0;
     private const int gridSize = 7;
     private (int x, int y) center = (0x80, 0x80);
-    private IList<GameEntityState>? entities;
-    private IEnumerable<string?>? Names => entities?.Select(e => $"{e.DisplayName} {e.SystemState.Location}");
+    private IEnumerable<GameEntityState>? entities;
+    private IEnumerable<string?>? Names => entities?.Select(e => $"{e.DisplayName} {e.SystemState.Location} ({e.Id})");
+    private ILookup<string, GameEntityState>? entityMap;
+    private string gameRegion = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -35,7 +37,17 @@ public partial class Index
         {
             await game.InitAsync();
             user = await gameStateClient.GetUserAsync() ?? throw new Exception("Failed to fetch current user entity");
+            await InitializeEntities();
         }
+    }
+
+    private async Task InitializeEntities()
+    {
+        this.gameRegion = await game.GetRegion();
+        var userLocation = Region.Combine(gameRegion, $"{plane:X2}:00:00");
+        await game.Move(user!, userLocation);
+        var entities = await gameStateClient.GetEntitiesNearbyAsync();
+        entityMap = entities!.ToLookup(e => e.SystemState.Location);
     }
 
     /// <summary>
@@ -49,13 +61,11 @@ public partial class Index
         return $"{plane:X2}:{x:X2}:{y:X2}";
     }
 
-    async Task OnClick(int col, int row)
+    void OnClick(int col, int row)
     {
-        entities = null;
-        var gameMaster = await gameMasterService.GetGameMaster();
-        var region = gameMaster.SystemState.ControlledRegion!;
-        var location = Region.Combine(region, Location(col, row));
-        await game.Move(user!, location);
-        entities = await gameStateClient.GetEntitiesNearbyAsync();
+        if (entityMap is null)
+            return;
+        var location = Region.Combine(gameRegion, Location(col, row));
+        entities = entityMap[location];
     }
 }
