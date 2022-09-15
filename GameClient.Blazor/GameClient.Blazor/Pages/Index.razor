@@ -26,7 +26,10 @@ else
             int c = col;
             int r = row;
             <div style="border: solid 1px" @onclick="_ => OnClick(c, r)">
-                @Location(col, row)
+                @Sublocation(col, row)
+                <p>
+                    @entityMap?[Location(col, row)].Count()
+                </p>
             </div>
         }
     }

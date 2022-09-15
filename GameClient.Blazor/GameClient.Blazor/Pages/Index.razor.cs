@@ -54,18 +54,23 @@ public partial class Index
     /// Returns the location string inside the GameMaster's region
     /// for a specific on-screen grid cell
     /// </summary>
-    string Location(int col, int row)
+    string Sublocation(int col, int row)
     {
         var x = col + center.x - gridSize / 2;
         var y = row + center.y - gridSize / 2;
         return $"{plane:X2}:{x:X2}:{y:X2}";
     }
 
+    private string Location(int col, int row)
+    {
+        return Region.Combine(gameRegion, Sublocation(col, row));
+    }
+
     void OnClick(int col, int row)
     {
         if (entityMap is null)
             return;
-        var location = Region.Combine(gameRegion, Location(col, row));
+        string location = Location(col, row);
         entities = entityMap[location];
     }
 }
