@@ -46,45 +46,50 @@
             @if (cellCharacters.Any())
             {
                 <div class="game-detail-grid">
+                    <div class="framed-golden">
+                        <div class="game-dpad-grid">
+                            <button type="button" class="rpgui-button dpad-grid-lf" @onclick="() => Move(0, -1)">
+                                <span>&#x1F880;</span>
+                            </button>
+                            <button type="button" class="rpgui-button dpad-grid-rt" @onclick="() => Move(0, +1)">
+                                <span>&#x1F882;</span>
+                            </button>
+                            <button type="button" class="rpgui-button dpad-grid-up" @onclick="() => Move(1, -1)">
+                                <span>&#x1F881;</span>
+                            </button>
+                            <button type="button" class="rpgui-button dpad-grid-dn" @onclick="() => Move(1, +1)">
+                                <span>&#x1F883;</span>
+                            </button>
+                        </div>
+                    </div>
                     <div>
                         <h4>
                             Mine
                         </h4>
+                        <div class="rpgui-container framed game-detail-scroll">
+                            @foreach (var name in ActiveCellNames(myCharacters))
+                            {
+                                <span>
+                                    @name <br />
+                                </span>
+                            }
+                        </div>
                         <button type="button" class="rpgui-button" @onclick="NewCharacter">
                             <span>New</span>
                         </button>
-                        <div class="game-dpad-grid">
-
-                            <button type="button" class="rpgui-button dpad-grid-lf" @onclick="() => Move(0, -1)">
-                                <span>&larr;</span>
-                            </button>
-                            <button type="button" class="rpgui-button dpad-grid-rt" @onclick="() => Move(0, +1)">
-                                <span>&rarr;</span>
-                            </button>
-                            <button type="button" class="rpgui-button dpad-grid-up" @onclick="() => Move(1, -1)">
-                                <span>&uarr;</span>
-                            </button>
-                            <button type="button" class="rpgui-button dpad-grid-dn" @onclick="() => Move(1, +1)">
-                                <span>&darr;</span>
-                            </button>
-                        </div>
-                        @foreach (var name in ActiveCellNames(myCharacters))
-                        {
-                            <span>
-                                @name <br />
-                            </span>
-                        }
                     </div>
                     <div>
                         <h4>
                             Theirs
                         </h4>
-                        @foreach (var name in ActiveCellNames(theirCharacters))
-                        {
-                            <span>
-                                @name <br />
-                            </span>
-                        }
+                        <div class="rpgui-container framed game-detail-scroll">
+                            @foreach (var name in ActiveCellNames(theirCharacters))
+                            {
+                                <span>
+                                    @name <br />
+                                </span>
+                            }
+                        </div>
                     </div>
                 </div>
             }

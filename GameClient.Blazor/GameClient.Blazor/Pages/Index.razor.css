@@ -27,15 +27,20 @@
 
 .game-detail {
     min-width: 600px;
-    max-height: 260px;
-    overflow-y: scroll;
     margin-top: 4px;
+}
+
+.game-detail-scroll {
+    max-height: 240px;
+    overflow-y: scroll;
 }
 
 .game-detail-grid {
     display: grid;
     width: 100%;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+    /* Gap to match the padding of the container */
+    gap: 12px;
 }
 
 .game-dpad-grid {
