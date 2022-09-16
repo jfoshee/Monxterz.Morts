@@ -85,17 +85,22 @@ public partial class Index
         return Region.Combine(gameRegion, Sublocation(col, row));
     }
 
-    string ActiveClass(string sublocation)
+    string ActiveClass(string location)
     {
-        return activeCell == sublocation ? "active" : "";
+        return activeCell == location ? "active" : "";
     }
 
     async Task OnClick(int col, int row)
     {
-        activeCell = Sublocation(col, row);
         if (characterMap is null)
             return;
         string location = Location(col, row);
+        await Activate(location);
+    }
+
+    private async Task Activate(string location)
+    {
+        activeCell = location;
         cellCharacters = characterMap[location].ToList();
         // Move user to the active cell so new characters will be created there
         await game.Move(user!, location);
@@ -119,5 +124,7 @@ public partial class Index
         cellCharacters.Remove(activeCharacter);
         // HACK: Update characterMap
         await Refresh();
+        // Move the active cell too to make it easy to keep moving that same character
+        await Activate(newLocation);
     }
 }

@@ -28,11 +28,11 @@
                     // Must not capture the loop variable in the lambda
                     int c = col;
                     int r = row;
-                    string sublocation = Sublocation(col, row);
-                    <div class="game-grid-cell @ActiveClass(sublocation)" @onclick="_ => OnClick(c, r)">
+                    string location = Location(col, row);
+                    <div class="game-grid-cell @ActiveClass(location)" @onclick="_ => OnClick(c, r)">
                         @*@sublocation*@
                         <span>
-                            @characterMap?[Location(col, row)].Count()
+                            @characterMap?[location].Count()
                         </span>
                     </div>
                 }
