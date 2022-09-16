@@ -21,6 +21,16 @@ public partial class Index
     private const int gridSize = 7;
     private (int x, int y) center = (0x80, 0x80);
     private IEnumerable<GameEntityState>? entities;
+    private string DetailTitle
+    {
+        get
+        {
+            if (activeCell is null)
+                return "Tap a square in the map";
+            return Names.Any() ? "In the area:" : "Nobody in the area";
+        }
+    }
+
     private IEnumerable<string?> Names => 
         entities?.Select(e => $"{e.DisplayName} {e.SystemState.Location} ({e.Id})")
         ?? Array.Empty<string>();
