@@ -32,7 +32,7 @@
                     <div class="game-grid-cell @ActiveClass(sublocation)" @onclick="_ => OnClick(c, r)">
                         @*@sublocation*@
                         <span>
-                            @entityMap?[Location(col, row)].Count()
+                            @characterMap?[Location(col, row)].Count()
                         </span>
                     </div>
                 }
@@ -44,7 +44,7 @@
             </h2>
             @foreach (var name in Names)
             {
-                <span style="font-size: 60%;">
+                <span>
                     @name
                     <br />
                 </span>

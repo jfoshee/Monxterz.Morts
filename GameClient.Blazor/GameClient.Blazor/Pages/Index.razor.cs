@@ -20,7 +20,7 @@ public partial class Index
     private const byte plane = 0;
     private const int gridSize = 7;
     private (int x, int y) center = (0x80, 0x80);
-    private IEnumerable<GameEntityState>? entities;
+
     private string DetailTitle
     {
         get
@@ -31,10 +31,9 @@ public partial class Index
         }
     }
 
-    private IEnumerable<string?> Names => 
-        entities?.Select(e => $"{e.DisplayName} {e.SystemState.Location} ({e.Id})")
-        ?? Array.Empty<string>();
-    private ILookup<string, GameEntityState>? entityMap;
+    private ILookup<string, Character>? characterMap;
+    private IEnumerable<Character>? characters;
+    private IEnumerable<string?> Names => characters?.Select(c => c.Name) ?? Array.Empty<string>();
     private string gameRegion = "";
     private string? activeCell = null;
 
@@ -60,7 +59,7 @@ public partial class Index
         var userLocation = Region.Combine(gameRegion, $"{plane:X2}:00:00");
         await game.Move(user!, userLocation);
         var entities = await gameStateClient.GetEntitiesNearbyAsync();
-        entityMap = entities!.ToLookup(e => e.SystemState.Location);
+        characterMap = entities!.Characters().ToLookup(c => c.Location);
     }
 
     /// <summary>
@@ -87,9 +86,9 @@ public partial class Index
     void OnClick(int col, int row)
     {
         activeCell = Sublocation(col, row);
-        if (entityMap is null)
+        if (characterMap is null)
             return;
         string location = Location(col, row);
-        entities = entityMap[location];
+        characters = characterMap[location];
     }
 }
