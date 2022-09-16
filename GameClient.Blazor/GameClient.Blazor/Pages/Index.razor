@@ -25,14 +25,15 @@
             {
                 for (int col = 0; col < gridSize; col++)
                 {
-                    // Must not capture the loop variable in the lambda
-                    int c = col;
-                    int r = row;
+                    // Do not capture the loop variable in the onclick lambda
                     string location = Location(col, row);
-                    <div class="game-grid-cell @ActiveClass(location)" @onclick="_ => OnClick(c, r)">
+                    <div class="game-grid-cell @ActiveClass(location)" @onclick="_ => OnClick(location)">
                         @*@sublocation*@
-                        <span>
-                            @characterMap?[location].Count()
+                        <span style="color: blue">
+                            @Symbols(location, e => e.OwnerId == user.Id)
+                        </span>
+                        <span style="color: red">
+                            @Symbols(location, e => e.OwnerId != user.Id)
                         </span>
                     </div>
                 }
@@ -66,7 +67,7 @@
                                 <span>&darr;</span>
                             </button>
                         </div>
-                        @foreach (var name in Names(myCharacters))
+                        @foreach (var name in ActiveCellNames(myCharacters))
                         {
                             <span>
                                 @name <br />
@@ -77,7 +78,7 @@
                         <h4>
                             Theirs
                         </h4>
-                        @foreach (var name in Names(theirCharacters))
+                        @foreach (var name in ActiveCellNames(theirCharacters))
                         {
                             <span>
                                 @name <br />

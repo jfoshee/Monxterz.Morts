@@ -1,13 +1,15 @@
 ﻿using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
-using Monxterz.StatePlatform;
-using Monxterz.StatePlatform.Client;
-using Monxterz.StatePlatform.ClientServices;
 
 namespace GameClient.Blazor.Pages;
 
 public partial class Index
 {
+    private const string characterSymbol = "&#10074;";
+    private const byte plane = 0;
+    private const int gridSize = 7;
+    private (int x, int y) center = (0x80, 0x80);
+
     [Inject] ILocalStorageService localStorageService { get; set; } = default!;
     [Inject] IGameBearerTokenProvider gameBearerTokenProvider { get; set; } = default!;
     [Inject] IChangeUserService changeUserService { get; set; } = default!;
@@ -15,11 +17,6 @@ public partial class Index
     [Inject] IGameTestHarness game { get; set; } = default!;
     [Inject] IGameStateClient gameStateClient { get; set; } = default!;
     [Inject] IGameMasterService gameMasterService { get; set; } = default!;
-
-    private GameEntityState? user;
-    private const byte plane = 0;
-    private const int gridSize = 7;
-    private (int x, int y) center = (0x80, 0x80);
 
     private string DetailTitle
     {
@@ -31,11 +28,12 @@ public partial class Index
         }
     }
 
-    private ILookup<string, Character>? characterMap;
-    private List<Character> cellCharacters = new();
     private IEnumerable<Character>? myCharacters => cellCharacters.Where(c => c.OwnerId == user!.Id);
     private IEnumerable<Character>? theirCharacters => cellCharacters.Where(c => c.OwnerId != user!.Id);
-    private IEnumerable<string?> Names(IEnumerable<Character>? characters) => characters?.Select(c => c.Name) ?? Array.Empty<string>();
+
+    private GameEntityState? user;
+    private ILookup<string, Character>? characterMap;
+    private List<Character> cellCharacters = new();
     private string gameRegion = "";
     private string? activeCell = null;
 
@@ -69,6 +67,8 @@ public partial class Index
         characterMap = entities!.Characters().ToLookup(c => c.Location);
     }
 
+    private IEnumerable<string?> ActiveCellNames(IEnumerable<Character>? characters) => characters?.Select(c => c.Name) ?? Array.Empty<string>();
+
     /// <summary>
     /// Returns the location string inside the GameMaster's region
     /// for a specific on-screen grid cell
@@ -82,7 +82,24 @@ public partial class Index
 
     private string Location(int col, int row)
     {
+        if (string.IsNullOrEmpty(gameRegion))
+            return "";
         return Region.Combine(gameRegion, Sublocation(col, row));
+    }
+
+    private int Count(string location, Func<Character, bool> predicate)
+    {
+        if (characterMap is null || user is null)
+            return 0;
+        return characterMap[location].Count(predicate);
+    }
+
+    private MarkupString Symbols(string location, Func<Character, bool> predicate)
+    {
+        var count = Count(location, predicate);
+        var repeat = Enumerable.Repeat(characterSymbol, count);
+        var s = string.Join(" ", repeat);
+        return new MarkupString(s);
     }
 
     string ActiveClass(string location)
@@ -90,11 +107,10 @@ public partial class Index
         return activeCell == location ? "active" : "";
     }
 
-    async Task OnClick(int col, int row)
+    async Task OnClick(string location)
     {
         if (characterMap is null)
             return;
-        string location = Location(col, row);
         await Activate(location);
     }
 
