@@ -27,13 +27,15 @@ public partial class Index
         {
             if (activeCell is null)
                 return "Tap a square in the map";
-            return Names.Any() ? "In the area:" : "Nobody in the area";
+            return cellCharacters.Any() ? "In the area:" : "Nobody in the area";
         }
     }
 
     private ILookup<string, Character>? characterMap;
-    private IEnumerable<Character>? characters;
-    private IEnumerable<string?> Names => characters?.Select(c => c.Name) ?? Array.Empty<string>();
+    private IEnumerable<Character>? cellCharacters;
+    private IEnumerable<Character>? myCharacters;
+    private IEnumerable<Character>? theirCharacters;
+    private IEnumerable<string?> Names(IEnumerable<Character>? characters) => characters?.Select(c => c.Name) ?? Array.Empty<string>();
     private string gameRegion = "";
     private string? activeCell = null;
 
@@ -89,6 +91,8 @@ public partial class Index
         if (characterMap is null)
             return;
         string location = Location(col, row);
-        characters = characterMap[location];
+        cellCharacters = characterMap[location];
+        myCharacters = cellCharacters.Where(c => c.OwnerId == user!.Id);
+        theirCharacters = cellCharacters.Where(c => c.OwnerId != user!.Id);
     }
 }

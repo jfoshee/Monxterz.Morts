@@ -39,16 +39,33 @@
             }
         </div>
         <div class="game-detail rpgui-container framed">
-            <h2>
+            <h1>
                 @DetailTitle
-            </h2>
-            @foreach (var name in Names)
-            {
-                <span>
-                    @name
-                    <br />
-                </span>
-            }
+            </h1>
+            <div class="game-detail-grid">
+                <div>
+                    <h4>
+                        Mine
+                    </h4>
+                    @foreach (var name in Names(myCharacters))
+                    {
+                        <span>
+                            @name <br />
+                        </span>
+                    }
+                </div>
+                <div>
+                    <h4>
+                        Theirs
+                    </h4>
+                    @foreach (var name in Names(theirCharacters))
+                    {
+                        <span>
+                            @name <br />
+                        </span>
+                    }
+                </div>
+            </div>
         </div>
     </div>
 </div>
