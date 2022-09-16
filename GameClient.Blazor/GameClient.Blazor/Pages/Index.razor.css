@@ -1,17 +1,20 @@
 ﻿.game {
+    /* 
+        For responsiveness wrap children of game 
+        so that it works in horizontal or vertical layout
+    */
     display: flex;
     flex-wrap: wrap;
 }
+
 .game-grid {
     display: grid;
     gap: 4px;
-/*  grid-template: defined in Razor so controlled by code */
-    width: calc(100vw - 16px);
-    height: calc(100vw - 16px);
+    /*  grid-template: defined in Razor so controlled by code */
+    width: min(calc(100vw - 16px), calc(100vh - 240px));
+    height: min(calc(100vw - 16px), calc(100vh - 240px));
     min-width: 300px;
     min-height: 300px;
-    max-width: calc(100vh - 4em);
-    max-height: calc(100vh - 4em);
 }
 
 .game-grid-cell {
