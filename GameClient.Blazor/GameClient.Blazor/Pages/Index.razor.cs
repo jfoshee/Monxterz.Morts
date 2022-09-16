@@ -32,9 +32,9 @@ public partial class Index
     }
 
     private ILookup<string, Character>? characterMap;
-    private IEnumerable<Character>? cellCharacters;
-    private IEnumerable<Character>? myCharacters;
-    private IEnumerable<Character>? theirCharacters;
+    private List<Character> cellCharacters = new();
+    private IEnumerable<Character>? myCharacters => cellCharacters.Where(c => c.OwnerId == user!.Id);
+    private IEnumerable<Character>? theirCharacters => cellCharacters.Where(c => c.OwnerId != user!.Id);
     private IEnumerable<string?> Names(IEnumerable<Character>? characters) => characters?.Select(c => c.Name) ?? Array.Empty<string>();
     private string gameRegion = "";
     private string? activeCell = null;
@@ -85,14 +85,22 @@ public partial class Index
         return activeCell == sublocation ? "active" : "";
     }
 
-    void OnClick(int col, int row)
+    async Task OnClick(int col, int row)
     {
         activeCell = Sublocation(col, row);
         if (characterMap is null)
             return;
         string location = Location(col, row);
-        cellCharacters = characterMap[location];
-        myCharacters = cellCharacters.Where(c => c.OwnerId == user!.Id);
-        theirCharacters = cellCharacters.Where(c => c.OwnerId != user!.Id);
+        cellCharacters = characterMap[location].ToList();
+        // Move user to the active cell so new characters will be created there
+        await game.Move(user!, location);
+    }
+
+    async Task NewCharacter()
+    {
+        var entity = await game.Create.Character();
+        var character = new Character(entity);
+        cellCharacters.Add(character);
+        // TODO: Update characterMap
     }
 }

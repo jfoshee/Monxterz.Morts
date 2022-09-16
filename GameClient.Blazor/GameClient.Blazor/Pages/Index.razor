@@ -42,30 +42,46 @@
             <h1>
                 @DetailTitle
             </h1>
-            <div class="game-detail-grid">
-                <div>
-                    <h4>
-                        Mine
-                    </h4>
-                    @foreach (var name in Names(myCharacters))
-                    {
-                        <span>
-                            @name <br />
-                        </span>
-                    }
+            @if (cellCharacters.Any())
+            {
+                <div class="game-detail-grid">
+                    <div>
+                        <h4>
+                            Mine
+                        </h4>
+                        <div>
+                            <button type="button" class="rpgui-button" @onclick="NewCharacter">
+                                <span>New</span>
+                            </button>
+                        </div>
+                        @foreach (var name in Names(myCharacters))
+                        {
+                            <span>
+                                @name <br />
+                            </span>
+                        }
+                    </div>
+                    <div>
+                        <h4>
+                            Theirs
+                        </h4>
+                        @foreach (var name in Names(theirCharacters))
+                        {
+                            <span>
+                                @name <br />
+                            </span>
+                        }
+                    </div>
                 </div>
+            }
+            else
+            {
                 <div>
-                    <h4>
-                        Theirs
-                    </h4>
-                    @foreach (var name in Names(theirCharacters))
-                    {
-                        <span>
-                            @name <br />
-                        </span>
-                    }
+                    <button type="button" class="rpgui-button" @onclick="NewCharacter">
+                        <span>New Character</span>
+                    </button>
                 </div>
-            </div>
+            }
         </div>
     </div>
 </div>
