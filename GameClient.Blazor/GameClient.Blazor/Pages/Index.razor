@@ -53,8 +53,17 @@
                             <button type="button" class="rpgui-button" @onclick="NewCharacter">
                                 <span>New</span>
                             </button>
-                            <button type="button" class="rpgui-button" @onclick="Move">
-                                <span>Move</span>
+                            <button type="button" class="rpgui-button" @onclick="() => Move(0, -1)">
+                                <span>&larr;</span>
+                            </button>
+                            <button type="button" class="rpgui-button" @onclick="() => Move(0, +1)">
+                                <span>&rarr;</span>
+                            </button>
+                            <button type="button" class="rpgui-button" @onclick="() => Move(1, -1)">
+                                <span>&uarr;</span>
+                            </button>
+                            <button type="button" class="rpgui-button" @onclick="() => Move(1, +1)">
+                                <span>&darr;</span>
                             </button>
                         </div>
                         @foreach (var name in Names(myCharacters))

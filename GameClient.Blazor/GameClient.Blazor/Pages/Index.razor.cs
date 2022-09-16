@@ -60,6 +60,11 @@ public partial class Index
         this.gameRegion = await game.GetRegion();
         var userLocation = Region.Combine(gameRegion, $"{plane:X2}:00:00");
         await game.Move(user!, userLocation);
+        await Refresh();
+    }
+
+    private async Task Refresh()
+    {
         var entities = await gameStateClient.GetEntitiesNearbyAsync();
         characterMap = entities!.Characters().ToLookup(c => c.Location);
     }
@@ -101,20 +106,18 @@ public partial class Index
         var entity = await game.Create.Character();
         var character = new Character(entity);
         cellCharacters.Add(character);
-        // TODO: Update characterMap
+        // HACK: Update characterMap
+        await Refresh();
     }
 
-    async Task Move()
+    async Task Move(int axis, int amount)
     {
         var activeCharacter = myCharacters.First();
         var location = activeCharacter.Location;
-        var chunks = Region.GetChunks(location);
-        var x = byte.Parse(chunks[5], System.Globalization.NumberStyles.HexNumber);
-        x++;
-        chunks[5] = x.ToString("X2");
-        var newLocation = string.Join(":", chunks);
+        var newLocation = Region.IncrementChunk(location, axis + 5, amount);
         await game.Move(activeCharacter.Entity, newLocation);
         cellCharacters.Remove(activeCharacter);
-        // TODO: Update characterMap
+        // HACK: Update characterMap
+        await Refresh();
     }
 }
