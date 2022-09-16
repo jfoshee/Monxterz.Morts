@@ -5,25 +5,28 @@
 @inject ILocalStorageService localStorageService;
 @inject IGameBearerTokenProvider gameTokenProvider;
 
-<h3>Login</h3>
-
-<form @onsubmit="LoginUser">
-    <div class="mb-3">
-        <label for="inputUserId" class="form-label">
-            User ID
-        </label>
-        <div class="input-group has-validation">
-            @*<span class="input-group-text" id="inputGroupPrepend3">@@</span>*@
-            <input type="text" class="form-control @isInvalid()" id="inputUserId" @bind="userId" required>
-            <div id="inputUserIdFeedback" class="invalid-feedback">
-                @errorMessage
+<div class="rpgui-content">
+    <div class="rpgui-container framed">
+        <h3>Login</h3>
+        <form @onsubmit="LoginUser" class="rpgui-container framed-grey">
+            <div class="mb-3">
+                <label for="inputUserId" class="form-label">
+                    User ID
+                </label>
+                <div class="input-group has-validation">
+                    @*<span class="input-group-text" id="inputGroupPrepend3">@@</span>*@
+                    <input type="text" class="form-control @isInvalid()" id="inputUserId" @bind="userId" required>
+                    <div id="inputUserIdFeedback" class="invalid-feedback">
+                        @errorMessage
+                    </div>
+                </div>
             </div>
-        </div>
+            <button type="button" class="btn btn-primary rpgui-button" @onclick="LoginUser">
+                Login
+            </button>
+        </form>
     </div>
-    <button type="button" class="btn btn-primary" @onclick="LoginUser">
-        Login
-    </button>
-</form>
+</div>
 
 @code {
     string? userId;
