@@ -50,20 +50,21 @@
                         <h4>
                             Mine
                         </h4>
-                        <div>
-                            <button type="button" class="rpgui-button" @onclick="NewCharacter">
-                                <span>New</span>
-                            </button>
-                            <button type="button" class="rpgui-button" @onclick="() => Move(0, -1)">
+                        <button type="button" class="rpgui-button" @onclick="NewCharacter">
+                            <span>New</span>
+                        </button>
+                        <div class="game-dpad-grid">
+
+                            <button type="button" class="rpgui-button dpad-grid-lf" @onclick="() => Move(0, -1)">
                                 <span>&larr;</span>
                             </button>
-                            <button type="button" class="rpgui-button" @onclick="() => Move(0, +1)">
+                            <button type="button" class="rpgui-button dpad-grid-rt" @onclick="() => Move(0, +1)">
                                 <span>&rarr;</span>
                             </button>
-                            <button type="button" class="rpgui-button" @onclick="() => Move(1, -1)">
+                            <button type="button" class="rpgui-button dpad-grid-up" @onclick="() => Move(1, -1)">
                                 <span>&uarr;</span>
                             </button>
-                            <button type="button" class="rpgui-button" @onclick="() => Move(1, +1)">
+                            <button type="button" class="rpgui-button dpad-grid-dn" @onclick="() => Move(1, +1)">
                                 <span>&darr;</span>
                             </button>
                         </div>
@@ -87,7 +88,7 @@
                     </div>
                 </div>
             }
-            else
+            else if (activeCell is not null)
             {
                 <div>
                     <button type="button" class="rpgui-button" @onclick="NewCharacter">
