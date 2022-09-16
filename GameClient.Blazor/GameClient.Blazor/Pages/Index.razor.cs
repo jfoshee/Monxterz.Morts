@@ -26,6 +26,7 @@ public partial class Index
         ?? Array.Empty<string>();
     private ILookup<string, GameEntityState>? entityMap;
     private string gameRegion = "";
+    private string? activeCell = null;
 
     protected override async Task OnInitializedAsync()
     {
@@ -68,8 +69,14 @@ public partial class Index
         return Region.Combine(gameRegion, Sublocation(col, row));
     }
 
+    string ActiveClass(string sublocation)
+    {
+        return activeCell == sublocation ? "active" : "";
+    }
+
     void OnClick(int col, int row)
     {
+        activeCell = Sublocation(col, row);
         if (entityMap is null)
             return;
         string location = Location(col, row);

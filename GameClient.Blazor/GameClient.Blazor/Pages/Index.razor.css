@@ -21,6 +21,10 @@
     background-color: green;
 }
 
+.game-grid-cell.active {
+    background-color: #b6ff00;
+}
+
 .game-detail {
     max-height: 200px;
     overflow-y: scroll;

@@ -28,8 +28,9 @@
                     // Must not capture the loop variable in the lambda
                     int c = col;
                     int r = row;
-                    <div class="game-grid-cell" @onclick="_ => OnClick(c, r)">
-                        @*@Sublocation(col, row)*@
+                    string sublocation = Sublocation(col, row);
+                    <div class="game-grid-cell @ActiveClass(sublocation)" @onclick="_ => OnClick(c, r)">
+                        @*@sublocation*@
                         <span>
                             @entityMap?[Location(col, row)].Count()
                         </span>
@@ -38,7 +39,9 @@
             }
         </div>
         <div class="game-detail rpgui-container framed">
-            <h2>In the area:</h2>
+            <h2>
+                In the area:
+            </h2>
             @foreach (var name in Names)
             {
                 <span style="font-size: 60%;">
