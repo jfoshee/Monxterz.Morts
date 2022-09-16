@@ -103,4 +103,18 @@ public partial class Index
         cellCharacters.Add(character);
         // TODO: Update characterMap
     }
+
+    async Task Move()
+    {
+        var activeCharacter = myCharacters.First();
+        var location = activeCharacter.Location;
+        var chunks = Region.GetChunks(location);
+        var x = byte.Parse(chunks[5], System.Globalization.NumberStyles.HexNumber);
+        x++;
+        chunks[5] = x.ToString("X2");
+        var newLocation = string.Join(":", chunks);
+        await game.Move(activeCharacter.Entity, newLocation);
+        cellCharacters.Remove(activeCharacter);
+        // TODO: Update characterMap
+    }
 }
