@@ -1,5 +1,10 @@
-﻿.game-grid {
+﻿.game {
+    display: flex;
+    flex-wrap: wrap;
+}
+.game-grid {
     display: grid;
+    gap: 4px;
 /*  grid-template: defined in Razor so controlled by code */
     width: calc(100vw - 16px);
     height: calc(100vw - 16px);
@@ -7,4 +12,13 @@
     min-height: 300px;
     max-width: calc(100vh - 4em);
     max-height: calc(100vh - 4em);
+}
+
+.game-grid-cell {
+    background-color: green;
+}
+
+.game-detail {
+    max-height: 200px;
+    overflow-y: scroll;
 }

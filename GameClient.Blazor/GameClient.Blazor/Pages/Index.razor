@@ -1,49 +1,50 @@
 ﻿@page "/"
-@if (user is not null)
-{
-    <p>
-    Hello,
-    @user.DisplayName
-</p>
-}
-else
-{
-    <p>
-    Checking authentication...
-</p>
-}
-<style>
-    .game-grid {
-        grid-template: repeat(@gridSize, 1fr) / repeat(@gridSize, 1fr);
-    }
-</style>
-<div class="game-grid">
-    @for (int row = 0; row < gridSize; row++)
-    {
-        for (int col = 0; col < gridSize; col++)
-        {
-            // Must not capture the loop variable in the lambda
-            int c = col;
-            int r = row;
-            <div style="border: solid 1px" @onclick="_ => OnClick(c, r)">
-                @Sublocation(col, row)
-                <p>
-                    @entityMap?[Location(col, row)].Count()
-                </p>
-            </div>
-        }
-    }
-</div>
-
 <div class="rpgui-content">
-    <div class="rpgui-container framed" style="">
-        <h2>In the area:</h2>
-        @foreach (var name in Names)
-        {
-            <span style="font-size: 0.5em;">
-                @name
-                <br />
-            </span>
+    @if (user is not null)
+    {
+        <p>
+            Hello,
+            @user.DisplayName
+        </p>
+    }
+    else
+    {
+        <p>
+            Checking authentication...
+        </p>
+    }
+    <style>
+        .game-grid {
+            grid-template: repeat(@gridSize, 1fr) / repeat(@gridSize, 1fr);
         }
+    </style>
+    <div class="game">
+        <div class="game-grid">
+            @for (int row = 0; row < gridSize; row++)
+            {
+                for (int col = 0; col < gridSize; col++)
+                {
+                    // Must not capture the loop variable in the lambda
+                    int c = col;
+                    int r = row;
+                    <div class="game-grid-cell" @onclick="_ => OnClick(c, r)">
+                        @*@Sublocation(col, row)*@
+                        <span>
+                            @entityMap?[Location(col, row)].Count()
+                        </span>
+                    </div>
+                }
+            }
+        </div>
+        <div class="game-detail rpgui-container framed">
+            <h2>In the area:</h2>
+            @foreach (var name in Names)
+            {
+                <span style="font-size: 60%;">
+                    @name
+                    <br />
+                </span>
+            }
+        </div>
     </div>
 </div>
