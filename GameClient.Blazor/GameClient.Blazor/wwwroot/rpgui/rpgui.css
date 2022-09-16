@@ -67,7 +67,7 @@ inside your html file.
   font-size: 1.0em;
   /* default size and display */
   max-width: 100%;
-  min-width: 140px;
+/*  min-width: 140px;*/
   height: 60px;
   display: inline-block;
   /* padding */
