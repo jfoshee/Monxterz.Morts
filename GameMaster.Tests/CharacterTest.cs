@@ -5,7 +5,12 @@ public class CharacterTest
     [Theory(DisplayName = "Default"), MortsTest]
     public async Task DefaultCharacter(IGameTestHarness game)
     {
+        var region = await game.GetRegion();
+        var defaultLocation = Region.Combine(region, "00:80:80");
+
         GameEntityState character = await game.Create.Character();
+
+        character.SystemState.Location.Should().Be(defaultLocation);
         var characterState = game.State(character);
         Assert.Equal("Character", characterState.type);
         Assert.Equal(100, characterState.hp);
@@ -32,4 +37,17 @@ public class CharacterTest
         game.State(player).characterCreatedAt = nowSeconds - 5 * 60;
         await game.Create.Character();
     }
+
+    [Theory(DisplayName = "Create at User Location (if inside game region)"), MortsTest]
+    public async Task AtUserLocation(IGameTestHarness game)
+    {
+        var player = await game.NewCurrentPlayer();
+        var region = await game.GetRegion();
+        var location = Region.Combine(region, "12:34:56");
+        await game.Move(player, location);
+
+        GameEntityState character = await game.Create.Character();
+
+        character.SystemState.Location.Should().Be(location);
+    }    
 }
