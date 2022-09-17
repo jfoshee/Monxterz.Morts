@@ -16,6 +16,23 @@
             "problemMatcher": []
         },
         {
+            "label": "gs-push production",
+            "type": "shell",
+            "windows": {
+                "command": "D:/Monxterz.StatePlatform/Monxterz.StatePlatform.Cli/bin/Debug/net6.0/gs-push.exe",
+            },
+            "osx": {
+                "command": "/Users/jfoshee/Github/Monxterz.StatePlatform/Monxterz.StatePlatform.Cli/bin/Debug/net6.0/gs-push",
+            },
+            "args": [
+                "https://statemgmt-app.azurewebsites.net"
+            ],
+            "options": {
+                "cwd": "GameMaster"
+            },
+            "problemMatcher": []
+        },
+        {
             "label": "build",
             "command": "dotnet",
             "type": "process",
