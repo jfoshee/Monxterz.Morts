@@ -2,6 +2,8 @@
 
 namespace GameClient.Blazor.ClientExtensions;
 
+public delegate void EntityChanged(string id);
+
 public class NotificationSubscriptionService
 {
     private readonly IConfiguration configuration;
@@ -20,6 +22,8 @@ public class NotificationSubscriptionService
         this.gameStateClient = gameStateClient ?? throw new ArgumentNullException(nameof(gameStateClient));
         this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
+
+    public event EntityChanged? EntityChanged;
 
     /// <summary>
     /// Connect to the Notification Server
@@ -46,6 +50,7 @@ public class NotificationSubscriptionService
         var entity = await gameStateClient.GetEntityAsync(id)
                      ?? throw new Exception($"Received unexpected null response for updated entity '{id}'.");
         entityCache.Set(entity);
-        // TODO: Raise event to update GUI
+        // Raise event to update GUI
+        EntityChanged?.Invoke(id);
     }
 }

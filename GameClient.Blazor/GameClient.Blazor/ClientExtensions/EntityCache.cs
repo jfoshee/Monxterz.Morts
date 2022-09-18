@@ -12,6 +12,7 @@ public class EntityCache : IEntityCache
     }
 
     public GameEntityState this[string id] { get => cache[id]; set => Set(value); }
+    public IEnumerable<GameEntityState> Entities => cache.Values;
 
     public GameEntityState? Get(string id) => CollectionExtensions.GetValueOrDefault(cache, id);
 

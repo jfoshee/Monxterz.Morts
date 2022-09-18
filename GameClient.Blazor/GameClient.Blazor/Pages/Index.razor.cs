@@ -1,10 +1,9 @@
 ﻿using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.SignalR.Client;
 
 namespace GameClient.Blazor.Pages;
 
-public partial class Index
+public partial class Index : IDisposable
 {
     private const string characterSymbol = "&#10074;";
     private const byte plane = 0;
@@ -17,11 +16,9 @@ public partial class Index
     [Inject] NavigationManager navigationManager { get; set; } = default!;
     [Inject] IGameTestHarness game { get; set; } = default!;
     [Inject] IGameStateClient gameStateClient { get; set; } = default!;
-    [Inject] IGameMasterService gameMasterService { get; set; } = default!;
-    [Inject] IConfiguration configuration { get; set; } = default!;
-    [Inject] ILogger<Index> logger { get; set; } = default!;
     [Inject] ICharacterFactory characterFactory { get; set; } = default!;
     [Inject] IEntityCache entityCache { get; set; } = default!;
+    [Inject] NotificationSubscriptionService notificationSubscriptionService { get; set; } = default!;
 
     private string DetailTitle
     {
@@ -41,7 +38,6 @@ public partial class Index
     private List<Character> cellCharacters = new();
     private string gameRegion = "";
     private string? activeCell = null;
-    private HubConnection hubConnection = default!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -57,6 +53,27 @@ public partial class Index
             user = await gameStateClient.GetUserAsync() ?? throw new Exception("Failed to fetch current user entity");
             await InitializeEntities();
         }
+    }
+
+    protected override void OnInitialized()
+    {
+        notificationSubscriptionService.EntityChanged += OnEntityChanged;
+    }
+
+    public void Dispose()
+    {
+        notificationSubscriptionService.EntityChanged -= OnEntityChanged;
+    }
+
+    private void OnEntityChanged(string id)
+    {
+        // Entity Cache should be up to date at this point
+        var entities = entityCache.Entities;
+        characterMap = characterFactory.Characters(entities!).ToLookup(c => c.Location);
+        if (activeCell is not null)
+            cellCharacters = characterMap[activeCell].ToList();
+        // https://learn.microsoft.com/en-us/aspnet/core/blazor/components/rendering?view=aspnetcore-6.0#receiving-a-call-from-something-external-to-the-blazor-rendering-and-event-handling-system
+        InvokeAsync(StateHasChanged);
     }
 
     private async Task InitializeEntities()
@@ -124,7 +141,7 @@ public partial class Index
     private async Task Activate(string location)
     {
         activeCell = location;
-        cellCharacters = characterMap[location].ToList();
+        cellCharacters = characterMap[activeCell].ToList();
         // Move user to the active cell so new characters will be created there
         await game.Move(user!, location);
     }
