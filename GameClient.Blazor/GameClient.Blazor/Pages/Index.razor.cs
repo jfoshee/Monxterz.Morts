@@ -29,8 +29,8 @@ public partial class Index : IDisposable
         }
     }
 
-    private IEnumerable<Character>? myCharacters => activeCellCharacters.Where(c => c.OwnerId == user!.Id);
-    private IEnumerable<Character>? theirCharacters => activeCellCharacters.Where(c => c.OwnerId != user!.Id);
+    private IEnumerable<Character> myCharacters => activeCellCharacters.Where(c => c.OwnerId == user!.Id);
+    private IEnumerable<Character> theirCharacters => activeCellCharacters.Where(c => c.OwnerId != user!.Id);
 
     private GameEntityState? user;
     private ILookup<string, Character>? characterMap;
@@ -151,7 +151,8 @@ public partial class Index : IDisposable
     private async Task Activate(string location)
     {
         activeCell = location;
-        activeCellCharacters = characterMap[activeCell].ToList();
+        if (characterMap is not null)
+            activeCellCharacters = characterMap[activeCell].ToList();
         // Move user to the active cell so new characters will be created there
         await game.Move(user!, location);
     }
@@ -174,6 +175,8 @@ public partial class Index : IDisposable
     {
         try
         {
+            if (!myCharacters.Any())
+                return;
             var activeCharacter = myCharacters.First();
             var location = activeCharacter.Location;
             var newLocation = Region.IncrementChunk(location, axis + 5, amount);
