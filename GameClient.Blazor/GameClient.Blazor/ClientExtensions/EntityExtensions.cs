@@ -7,13 +7,4 @@ public static class EntityExtensions
         var type = entity.GetPublicValue<string>(Constants.GameMasterId, "type");
         return type == "Character";
     }
-
-    public static IEnumerable<Character> Characters(this IEnumerable<GameEntityState> entities)
-    {
-        if (entities is null)
-        {
-            throw new ArgumentNullException(nameof(entities));
-        }
-        return entities.Where(IsCharacter).Select(e => new Character(e));
-    }
 }

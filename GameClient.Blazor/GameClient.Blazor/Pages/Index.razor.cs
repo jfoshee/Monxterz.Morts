@@ -20,6 +20,7 @@ public partial class Index
     [Inject] IGameMasterService gameMasterService { get; set; } = default!;
     [Inject] IConfiguration configuration { get; set; } = default!;
     [Inject] ILogger<Index> logger { get; set; } = default!;
+    [Inject] ICharacterFactory characterFactory { get; set; } = default!;
 
     private string DetailTitle
     {
@@ -88,7 +89,7 @@ public partial class Index
     private async Task Refresh()
     {
         var entities = await gameStateClient.GetEntitiesNearbyAsync();
-        characterMap = entities!.Characters().ToLookup(c => c.Location);
+        characterMap = characterFactory.Characters(entities!).ToLookup(c => c.Location);
     }
 
     private IEnumerable<string?> ActiveCellNames(IEnumerable<Character>? characters) => characters?.Select(c => c.Name) ?? Array.Empty<string>();
@@ -149,7 +150,7 @@ public partial class Index
     async Task NewCharacter()
     {
         var entity = await game.Create.Character();
-        var character = new Character(entity);
+        var character = characterFactory.Character(entity);
         cellCharacters.Add(character);
         // HACK: Update characterMap
         await Refresh();
