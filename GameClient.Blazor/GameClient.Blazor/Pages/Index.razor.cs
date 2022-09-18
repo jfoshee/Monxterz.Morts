@@ -21,6 +21,7 @@ public partial class Index
     [Inject] IConfiguration configuration { get; set; } = default!;
     [Inject] ILogger<Index> logger { get; set; } = default!;
     [Inject] ICharacterFactory characterFactory { get; set; } = default!;
+    [Inject] IEntityCache entityCache { get; set; } = default!;
 
     private string DetailTitle
     {
@@ -88,7 +89,8 @@ public partial class Index
 
     private async Task Refresh()
     {
-        var entities = await gameStateClient.GetEntitiesNearbyAsync();
+        var entities = await gameStateClient.GetEntitiesNearbyAsync() ?? throw new Exception("Nearby entities response was null.");
+        entityCache.Add(entities);
         characterMap = characterFactory.Characters(entities!).ToLookup(c => c.Location);
     }
 
