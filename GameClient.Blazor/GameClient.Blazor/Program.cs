@@ -1,4 +1,3 @@
-using Blazored.LocalStorage;
 using GameClient.Blazor;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -13,7 +12,8 @@ builder.Services.AddGameStateClientServices(Constants.GameMasterId, baseUrl)
                 .AddBlazoredToast()
                 .AddSingleton<IEntityCache, EntityCache>()
                 .AddSingleton<NotificationSubscriptionService>()
-                .AddTransient<ICharacterFactory, CharacterFactory>();
+                .AddTransient<ICharacterFactory, CharacterFactory>()
+                .AddTransient<ILogoutService, LogoutService>();
 
 var app = builder.Build();
 var notificationSubscriptionService = app.Services.GetRequiredService<NotificationSubscriptionService>();

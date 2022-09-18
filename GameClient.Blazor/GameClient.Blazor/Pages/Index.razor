@@ -2,10 +2,9 @@
 <div class="rpgui-content">
     @if (user is not null)
     {
-        <p>
-            Hello,
-            @user.DisplayName
-        </p>
+        <button class="rpgui-button" @onclick="Logout">
+            Logout @user.DisplayName
+        </button>
     }
     else
     {

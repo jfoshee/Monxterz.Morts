@@ -1,7 +1,4 @@
-﻿using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Components;
-
-namespace GameClient.Blazor.Pages;
+﻿namespace GameClient.Blazor.Pages;
 
 public partial class Index : IDisposable
 {
@@ -11,6 +8,7 @@ public partial class Index : IDisposable
     private (int x, int y) center = (0x80, 0x80);
 
     [Inject] ILocalStorageService localStorageService { get; set; } = default!;
+    [Inject] ILogoutService logoutService { get; set; } = default!;
     [Inject] IGameBearerTokenProvider gameBearerTokenProvider { get; set; } = default!;
     [Inject] IChangeUserService changeUserService { get; set; } = default!;
     [Inject] NavigationManager navigationManager { get; set; } = default!;
@@ -67,6 +65,8 @@ public partial class Index : IDisposable
         // https://learn.microsoft.com/en-us/aspnet/core/blazor/components/lifecycle?view=aspnetcore-6.0#event-handlers
         notificationSubscriptionService.EntityChanged -= OnEntityChanged;
     }
+
+    Task Logout() => logoutService.Logout();
 
     private void OnEntityChanged(string id)
     {
