@@ -1,4 +1,9 @@
-﻿namespace GameClient.Blazor.ClientExtensions;
+﻿using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components;
+using Monxterz.StatePlatform.Client;
+using Monxterz.StatePlatform.ClientServices;
+
+namespace GameClient.Blazor.ClientExtensions;
 
 public class LogoutService : ILogoutService
 {

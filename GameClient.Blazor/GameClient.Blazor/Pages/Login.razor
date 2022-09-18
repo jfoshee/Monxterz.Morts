@@ -4,6 +4,7 @@
 @inject IGameStateClient gameStateClient;
 @inject ILocalStorageService localStorageService;
 @inject IGameBearerTokenProvider gameTokenProvider;
+@inject ILoginService loginService;
 
 <div class="rpgui-content">
     <div class="rpgui-container framed">
@@ -43,26 +44,17 @@
             errorMessage = "You cannot login with a null User ID.";
             return;
         }
-        userId = userId.Trim();
         try
         {
-            await changeUserService.ChangeUserAsync(userId);
-            var response = await gameStateClient.GetAuthTestAsync();
-            if (response?.IsAuthenticated == true && response?.UserId == userId)
-            {
-                // Save JWT Token
-                // TODO: Break direct dependence on IGameBearerTokenProvider
-                var token = gameTokenProvider.BearerToken;
-                await localStorageService.SetItemAsync("Token", gameTokenProvider.BearerToken);
-                await localStorageService.SetItemAsync("UserID", gameTokenProvider.UserId);
-                navigationManager.NavigateTo("/");
-            }
-            else
-                errorMessage = "The authentication test failed. The user could not be authenticated.";
+            await loginService.LoginUser(userId);
         }
         catch (ApiException apiException)
         {
             errorMessage = apiException.SimpleMessage();
+        }
+        catch (Exception exception)
+        {
+            errorMessage = exception.Message;
         }
     }
 

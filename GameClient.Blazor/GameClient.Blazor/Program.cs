@@ -13,6 +13,7 @@ builder.Services.AddGameStateClientServices(Constants.GameMasterId, baseUrl)
                 .AddSingleton<IEntityCache, EntityCache>()
                 .AddSingleton<NotificationSubscriptionService>()
                 .AddTransient<ICharacterFactory, CharacterFactory>()
+                .AddTransient<ILoginService, LoginService>()
                 .AddTransient<ILogoutService, LogoutService>();
 
 var app = builder.Build();
