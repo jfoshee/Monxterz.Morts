@@ -1,6 +1,7 @@
 ﻿@page "/new-player"
 @inject NavigationManager navigationManager;
 @inject IGameStateClient gameStateClient;
+@inject ILoginService loginService;
 
 <div class="rpgui-content">
     <div class="rpgui-container framed">
@@ -15,12 +16,12 @@
                 </div>
             </div>
             <div class="mb-3">
-                <label for="inputUserId" class="form-label">
+                <label for="inputDisplayName" class="form-label">
                     Display Name
                 </label>
                 <div class="input-group has-validation">
                     <input type="text" class="form-control @isInvalid()" id="inputDisplayName" @bind="displayName" required>
-                    <div id="inputUserIdFeedback" class="invalid-feedback">
+                    <div class="invalid-feedback">
                         @errorMessage
                     </div>
                 </div>
@@ -55,11 +56,21 @@
         try
         {
             await gameStateClient.PostUserNewAsync(userId, displayName);
-            navigationManager.NavigateTo("/login");
         }
         catch (ApiException apiException)
         {
             errorMessage = apiException.SimpleMessage();
+            return;
+        }
+        try
+        {
+            await loginService.LoginUser(userId);
+        }
+        catch (Exception)
+        {
+            // If login fails for any reason send them to the login page where they can try to handle that
+            // If the user has already been created they can't resolve it here.
+            navigationManager.NavigateTo("/login");
         }
     }
 
