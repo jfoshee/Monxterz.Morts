@@ -26,16 +26,16 @@ public partial class Index : IDisposable
         {
             if (activeCell is null)
                 return "Tap a square in the map";
-            return cellCharacters.Any() ? "In the area:" : "Nobody in the area";
+            return activeCellCharacters.Any() ? "In the area:" : "Nobody in the area";
         }
     }
 
-    private IEnumerable<Character>? myCharacters => cellCharacters.Where(c => c.OwnerId == user!.Id);
-    private IEnumerable<Character>? theirCharacters => cellCharacters.Where(c => c.OwnerId != user!.Id);
+    private IEnumerable<Character>? myCharacters => activeCellCharacters.Where(c => c.OwnerId == user!.Id);
+    private IEnumerable<Character>? theirCharacters => activeCellCharacters.Where(c => c.OwnerId != user!.Id);
 
     private GameEntityState? user;
     private ILookup<string, Character>? characterMap;
-    private List<Character> cellCharacters = new();
+    private List<Character> activeCellCharacters = new();
     private string gameRegion = "";
     private string? activeCell = null;
 
@@ -68,12 +68,26 @@ public partial class Index : IDisposable
     private void OnEntityChanged(string id)
     {
         // Entity Cache should be up to date at this point
-        var entities = entityCache.Entities;
-        characterMap = characterFactory.Characters(entities!).ToLookup(c => c.Location);
-        if (activeCell is not null)
-            cellCharacters = characterMap[activeCell].ToList();
+        RefreshFromCache();
         // https://learn.microsoft.com/en-us/aspnet/core/blazor/components/rendering?view=aspnetcore-6.0#receiving-a-call-from-something-external-to-the-blazor-rendering-and-event-handling-system
         InvokeAsync(StateHasChanged);
+    }
+
+    private void RefreshFromCache()
+    {
+        var entities = entityCache.Entities;
+        characterMap = characterFactory.Characters(entities!)
+                                       .ToLookup(c => c.Location);
+        if (activeCell is not null)
+            activeCellCharacters = characterMap[activeCell].ToList();
+    }
+
+    private async Task RefreshFromServer()
+    {
+        var entities = await gameStateClient.GetEntitiesNearbyAsync()
+                       ?? throw new Exception("Nearby entities response was null.");
+        entityCache.Set(entities);
+        RefreshFromCache();
     }
 
     private async Task InitializeEntities()
@@ -81,14 +95,7 @@ public partial class Index : IDisposable
         this.gameRegion = await game.GetRegion();
         var userLocation = Region.Combine(gameRegion, $"{plane:X2}:00:00");
         await game.Move(user!, userLocation);
-        await Refresh();
-    }
-
-    private async Task Refresh()
-    {
-        var entities = await gameStateClient.GetEntitiesNearbyAsync() ?? throw new Exception("Nearby entities response was null.");
-        entityCache.Set(entities);
-        characterMap = characterFactory.Characters(entities!).ToLookup(c => c.Location);
+        await RefreshFromServer();
     }
 
     private IEnumerable<string?> ActiveCellNames(IEnumerable<Character>? characters) => characters?.Select(c => c.Name) ?? Array.Empty<string>();
@@ -141,17 +148,16 @@ public partial class Index : IDisposable
     private async Task Activate(string location)
     {
         activeCell = location;
-        cellCharacters = characterMap[activeCell].ToList();
+        activeCellCharacters = characterMap[activeCell].ToList();
         // Move user to the active cell so new characters will be created there
         await game.Move(user!, location);
     }
 
     async Task NewCharacter()
     {
-        var character = await characterFactory.CreateNew();
-        cellCharacters.Add(character);
-        // HACK: Update characterMap
-        await Refresh();
+        await characterFactory.CreateNew();
+        // The new character will be in the cache already
+        RefreshFromCache();
     }
 
     async Task Move(int axis, int amount)
@@ -159,10 +165,9 @@ public partial class Index : IDisposable
         var activeCharacter = myCharacters.First();
         var location = activeCharacter.Location;
         var newLocation = Region.IncrementChunk(location, axis + 5, amount);
+        // game.Move updates the Entity in place
         await game.Move(activeCharacter.Entity, newLocation);
-        cellCharacters.Remove(activeCharacter);
-        // HACK: Update characterMap
-        await Refresh();
+        RefreshFromCache();
         // Move the active cell too to make it easy to keep moving that same character
         await Activate(newLocation);
     }
