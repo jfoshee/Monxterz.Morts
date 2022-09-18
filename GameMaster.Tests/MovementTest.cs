@@ -1,14 +1,20 @@
-using Monxterz.StatePlatform;
-
 namespace GameMaster.Tests;
 
 public class MovementTest
 {
-    [Theory(DisplayName = "Character initial position"), MortsTest]
-    public async Task Initial(IGameTestHarness game, IGameMasterService gameMasterService)
+    public async Task<GameEntityState> NewPlayer(IGameTestHarness game)
     {
-        var gameMaster = await gameMasterService.GetGameMaster();
-        var region = gameMaster.SystemState.ControlledRegion!;
+        // Initialize player to outside game so character initialized at 80:80
+        GameEntityState player = await game.NewCurrentPlayer();
+        await game.Move(player, "00:00:00:00:00");
+        return player;
+    }
+
+    [Theory(DisplayName = "Character initial position"), MortsTest]
+    public async Task Initial(IGameTestHarness game)
+    {
+        await NewPlayer(game);
+        var region = await game.GetRegion();
         GameEntityState character = await game.Create.Character();
         var location = character.SystemState.Location;
 
@@ -17,12 +23,11 @@ public class MovementTest
     }
 
     [Theory(DisplayName = "Player can move anywhere"), MortsTest]
-    public async Task MovePlayer(IGameTestHarness game, IGameMasterService gameMasterService)
+    public async Task MovePlayer(IGameTestHarness game)
     {
         // At this time players can "occupy" any cell... Might need to change this later.
-        var player = await game.NewCurrentPlayer();
-        var gameMaster = await gameMasterService.GetGameMaster();
-        var region = gameMaster.SystemState.ControlledRegion!;
+        var player = await NewPlayer(game);
+        var region = await game.GetRegion();
         var newLocation = Region.Combine(region, "00:42:24");
 
         await game.Move(player, newLocation);
@@ -42,10 +47,10 @@ public class MovementTest
     }
 
     [Theory(DisplayName = "Move x +1"), MortsTest]
-    public async Task MoveRight(IGameTestHarness game, IGameMasterService gameMasterService)
+    public async Task MoveRight(IGameTestHarness game)
     {
-        var gameMaster = await gameMasterService.GetGameMaster();
-        var region = gameMaster.SystemState.ControlledRegion!;
+        var player = await NewPlayer(game);
+        var region = await game.GetRegion();
         var newLocation = Region.Combine(region, "00:81:80");
         GameEntityState character = await game.Create.Character();
 
@@ -55,10 +60,10 @@ public class MovementTest
     }
 
     [Theory(DisplayName = "Move x -1"), MortsTest]
-    public async Task MoveLeft(IGameTestHarness game, IGameMasterService gameMasterService)
+    public async Task MoveLeft(IGameTestHarness game)
     {
-        var gameMaster = await gameMasterService.GetGameMaster();
-        var region = gameMaster.SystemState.ControlledRegion!;
+        var player = await NewPlayer(game);
+        var region = await game.GetRegion();
         var newLocation = Region.Combine(region, "00:7F:80");
         GameEntityState character = await game.Create.Character();
 
@@ -68,10 +73,10 @@ public class MovementTest
     }
 
     [Theory(DisplayName = "Move x +2"), MortsTest]
-    public async Task MoveX2(IGameTestHarness game, IGameMasterService gameMasterService)
+    public async Task MoveX2(IGameTestHarness game)
     {
-        var gameMaster = await gameMasterService.GetGameMaster();
-        var region = gameMaster.SystemState.ControlledRegion!;
+        var player = await NewPlayer(game);
+        var region = await game.GetRegion();
         var newLocation = Region.Combine(region, "00:82:80");
         GameEntityState character = await game.Create.Character();
         var location = character.SystemState.Location;
@@ -84,10 +89,10 @@ public class MovementTest
     }
 
     [Theory(DisplayName = "Move y +1"), MortsTest]
-    public async Task MoveUp(IGameTestHarness game, IGameMasterService gameMasterService)
+    public async Task MoveUp(IGameTestHarness game)
     {
-        var gameMaster = await gameMasterService.GetGameMaster();
-        var region = gameMaster.SystemState.ControlledRegion!;
+        var player = await NewPlayer(game);
+        var region = await game.GetRegion();
         var newLocation = Region.Combine(region, "00:80:81");
         GameEntityState character = await game.Create.Character();
 
@@ -97,10 +102,10 @@ public class MovementTest
     }
 
     [Theory(DisplayName = "Move y -1"), MortsTest]
-    public async Task MoveDown(IGameTestHarness game, IGameMasterService gameMasterService)
+    public async Task MoveDown(IGameTestHarness game)
     {
-        var gameMaster = await gameMasterService.GetGameMaster();
-        var region = gameMaster.SystemState.ControlledRegion!;
+        var player = await NewPlayer(game);
+        var region = await game.GetRegion();
         var newLocation = Region.Combine(region, "00:80:7F");
         GameEntityState character = await game.Create.Character();
 
@@ -110,10 +115,10 @@ public class MovementTest
     }
 
     [Theory(DisplayName = "Move y +2"), MortsTest]
-    public async Task MoveY2(IGameTestHarness game, IGameMasterService gameMasterService)
+    public async Task MoveY2(IGameTestHarness game)
     {
-        var gameMaster = await gameMasterService.GetGameMaster();
-        var region = gameMaster.SystemState.ControlledRegion!;
+        var player = await NewPlayer(game);
+        var region = await game.GetRegion();
         var newLocation = Region.Combine(region, "00:80:82");
         GameEntityState character = await game.Create.Character();
         var location = character.SystemState.Location;

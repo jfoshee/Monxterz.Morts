@@ -29,6 +29,7 @@ function initState(context, entity) {
   state.isTraining = false;
   state.isRecovering = false;
   state.recoveryTime = 10;
+  state.activity = null;
 }
 
 function initLocation(context, entity) {

@@ -5,6 +5,9 @@ public class CharacterTest
     [Theory(DisplayName = "Default"), MortsTest]
     public async Task DefaultCharacter(IGameTestHarness game)
     {
+        // Initialize player to outside game so character initialized at 80:80
+        var player = await game.NewCurrentPlayer();
+        await game.Move(player, "00:00:00:00:00");
         var region = await game.GetRegion();
         var defaultLocation = Region.Combine(region, "00:80:80");
 
@@ -19,6 +22,7 @@ public class CharacterTest
         Assert.Equal(10, characterState.recoveryTime);
         Assert.False(characterState.isTraining);
         Assert.False(characterState.isRecovering);
+        Assert.Null(characterState.activity);
     }
 
     [Theory(DisplayName = "Delay between Character Creation"), MortsTest]
