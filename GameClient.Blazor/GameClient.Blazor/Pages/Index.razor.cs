@@ -90,7 +90,7 @@ public partial class Index
     private async Task Refresh()
     {
         var entities = await gameStateClient.GetEntitiesNearbyAsync() ?? throw new Exception("Nearby entities response was null.");
-        entityCache.Add(entities);
+        entityCache.Set(entities);
         characterMap = characterFactory.Characters(entities!).ToLookup(c => c.Location);
     }
 
@@ -151,8 +151,7 @@ public partial class Index
 
     async Task NewCharacter()
     {
-        var entity = await game.Create.Character();
-        var character = characterFactory.Character(entity);
+        var character = await characterFactory.CreateNew();
         cellCharacters.Add(character);
         // HACK: Update characterMap
         await Refresh();
