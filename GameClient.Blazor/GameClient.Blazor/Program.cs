@@ -10,6 +10,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 var baseUrl = builder.Configuration["ApiBaseUrl"] ?? builder.HostEnvironment.BaseAddress;
 builder.Services.AddGameStateClientServices(Constants.GameMasterId, baseUrl)
                 .AddBlazoredLocalStorage()
+                .AddBlazoredToast()
                 .AddSingleton<IEntityCache, EntityCache>()
                 .AddSingleton<NotificationSubscriptionService>()
                 .AddTransient<ICharacterFactory, CharacterFactory>();

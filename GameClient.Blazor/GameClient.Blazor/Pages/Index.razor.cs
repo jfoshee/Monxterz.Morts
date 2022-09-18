@@ -19,6 +19,7 @@ public partial class Index : IDisposable
     [Inject] ICharacterFactory characterFactory { get; set; } = default!;
     [Inject] IEntityCache entityCache { get; set; } = default!;
     [Inject] NotificationSubscriptionService notificationSubscriptionService { get; set; } = default!;
+    [Inject] IToastService toastService { get; set; } = default!;
 
     private string DetailTitle
     {
@@ -52,6 +53,7 @@ public partial class Index : IDisposable
             await game.InitAsync();
             user = await gameStateClient.GetUserAsync() ?? throw new Exception("Failed to fetch current user entity");
             await InitializeEntities();
+            toastService.ShowInfo($"Welcome Back, {user.DisplayName}!");
         }
     }
 
@@ -156,20 +158,34 @@ public partial class Index : IDisposable
 
     async Task NewCharacter()
     {
-        await characterFactory.CreateNew();
-        // The new character will be in the cache already
-        RefreshFromCache();
+        try
+        {
+            await characterFactory.CreateNew();
+            // The new character will be in the cache already
+            RefreshFromCache();
+        }
+        catch (ApiException apiException)
+        {
+            toastService.ShowError(apiException.SimpleMessage());
+        }
     }
 
     async Task Move(int axis, int amount)
     {
-        var activeCharacter = myCharacters.First();
-        var location = activeCharacter.Location;
-        var newLocation = Region.IncrementChunk(location, axis + 5, amount);
-        // game.Move updates the Entity in place
-        await game.Move(activeCharacter.Entity, newLocation);
-        RefreshFromCache();
-        // Move the active cell too to make it easy to keep moving that same character
-        await Activate(newLocation);
+        try
+        {
+            var activeCharacter = myCharacters.First();
+            var location = activeCharacter.Location;
+            var newLocation = Region.IncrementChunk(location, axis + 5, amount);
+            // game.Move updates the Entity in place
+            await game.Move(activeCharacter.Entity, newLocation);
+            RefreshFromCache();
+            // Move the active cell too to make it easy to keep moving that same character
+            await Activate(newLocation);
+        }
+        catch (ApiException apiException)
+        {
+            toastService.ShowError(apiException.SimpleMessage());
+        }
     }
 }
