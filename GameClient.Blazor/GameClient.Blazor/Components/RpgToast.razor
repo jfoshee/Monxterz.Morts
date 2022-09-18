@@ -1,4 +1,4 @@
-﻿<div class="rpgui-content">
+﻿<div class="rpgui-content" @onclick="ToastInstance.Close">
     <div class="rpgui-container framed-grey">
         <h1>
             @Title
@@ -8,5 +8,6 @@
 
 @code
 {
+    [CascadingParameter] private BlazoredToast ToastInstance { get; set; } = default!;
     [Parameter] public string? Title { get; set; }
 }
