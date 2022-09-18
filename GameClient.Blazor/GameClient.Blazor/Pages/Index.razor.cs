@@ -53,7 +53,7 @@ public partial class Index : IDisposable
             await game.InitAsync();
             user = await gameStateClient.GetUserAsync() ?? throw new Exception("Failed to fetch current user entity");
             await InitializeEntities();
-            toastService.ShowInfo($"Welcome Back, {user.DisplayName}!");
+            toastService.ShowInfoRpg($"Welcome Back, {user.DisplayName}!");
         }
     }
 
