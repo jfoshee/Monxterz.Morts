@@ -62,6 +62,7 @@ public partial class Index : IDisposable
 
     public void Dispose()
     {
+        // https://learn.microsoft.com/en-us/aspnet/core/blazor/components/lifecycle?view=aspnetcore-6.0#event-handlers
         notificationSubscriptionService.EntityChanged -= OnEntityChanged;
     }
 
