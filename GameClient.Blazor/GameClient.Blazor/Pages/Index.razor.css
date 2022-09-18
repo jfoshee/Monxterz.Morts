@@ -11,8 +11,8 @@
     display: grid;
     gap: 4px;
     /*  grid-template: defined in Razor so controlled by code */
-    width: min(calc(100vw - 16px), calc(100vh - 300px));
-    height: min(calc(100vw - 16px), calc(100vh - 300px));
+    width: min(calc(100vw - 16px), calc(100vh - 450px));
+    height: min(calc(100vw - 16px), calc(100vh - 450px));
     min-width: 300px;
     min-height: 300px;
 }
