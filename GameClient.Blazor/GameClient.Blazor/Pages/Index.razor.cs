@@ -166,7 +166,7 @@ public partial class Index : IDisposable
         }
         catch (ApiException apiException)
         {
-            toastService.ShowError(apiException.SimpleMessage());
+            toastService.ShowErrorRpg(apiException.SimpleMessage());
         }
     }
 
@@ -185,7 +185,7 @@ public partial class Index : IDisposable
         }
         catch (ApiException apiException)
         {
-            toastService.ShowError(apiException.SimpleMessage());
+            toastService.ShowErrorRpg(apiException.SimpleMessage());
         }
     }
 }

@@ -10,4 +10,9 @@ public static class ToastServiceExtensions
         toastParameters.Add(nameof(RpgToast.Title), message);
         toastService.ShowToast<RpgToast>(toastParameters);
     }
+    public static void ShowErrorRpg(this IToastService toastService, string message)
+    {
+        // TODO: Error styling
+        ShowInfoRpg(toastService, message);
+    }
 }
