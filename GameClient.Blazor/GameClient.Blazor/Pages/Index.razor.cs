@@ -1,5 +1,6 @@
 ﻿using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.SignalR.Client;
 
 namespace GameClient.Blazor.Pages;
 
@@ -17,6 +18,8 @@ public partial class Index
     [Inject] IGameTestHarness game { get; set; } = default!;
     [Inject] IGameStateClient gameStateClient { get; set; } = default!;
     [Inject] IGameMasterService gameMasterService { get; set; } = default!;
+    [Inject] IConfiguration configuration { get; set; } = default!;
+    [Inject] ILogger<Index> logger { get; set; } = default!;
 
     private string DetailTitle
     {
@@ -36,6 +39,7 @@ public partial class Index
     private List<Character> cellCharacters = new();
     private string gameRegion = "";
     private string? activeCell = null;
+    private HubConnection hubConnection = default!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -50,7 +54,27 @@ public partial class Index
             await game.InitAsync();
             user = await gameStateClient.GetUserAsync() ?? throw new Exception("Failed to fetch current user entity");
             await InitializeEntities();
+
+            // Connect to Change Notifications service
+            var notificationsUrl = configuration["NotificationsUrl"];
+            if (notificationsUrl is null)
+            {
+                logger.LogError("Config['NotificationsUrl'] is missing. Notifications will not work.");
+                return;
+            }
+            hubConnection = new HubConnectionBuilder()
+                .WithUrl(notificationsUrl)
+                .Build();
+            hubConnection.On<string>("ReceiveNotification", RefreshEntity);
+            await hubConnection.StartAsync();
         }
+    }
+
+    private async Task RefreshEntity(string id)
+    {
+        // HACK: Refresh everything
+        await Refresh();
+        base.StateHasChanged();
     }
 
     private async Task InitializeEntities()
