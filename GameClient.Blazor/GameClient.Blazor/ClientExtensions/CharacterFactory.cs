@@ -1,4 +1,6 @@
-﻿namespace GameClient.Blazor.ClientExtensions;
+﻿using Microsoft.Extensions.Logging;
+
+namespace GameClient.Blazor.ClientExtensions;
 
 public class CharacterFactory : ICharacterFactory
 {

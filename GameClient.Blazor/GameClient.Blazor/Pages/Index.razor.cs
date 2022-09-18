@@ -56,27 +56,7 @@ public partial class Index
             await game.InitAsync();
             user = await gameStateClient.GetUserAsync() ?? throw new Exception("Failed to fetch current user entity");
             await InitializeEntities();
-
-            // Connect to Change Notifications service
-            var notificationsUrl = configuration["NotificationsUrl"];
-            if (notificationsUrl is null)
-            {
-                logger.LogError("Config['NotificationsUrl'] is missing. Notifications will not work.");
-                return;
-            }
-            hubConnection = new HubConnectionBuilder()
-                .WithUrl(notificationsUrl)
-                .Build();
-            hubConnection.On<string>("ReceiveNotification", RefreshEntity);
-            await hubConnection.StartAsync();
         }
-    }
-
-    private async Task RefreshEntity(string id)
-    {
-        // HACK: Refresh everything
-        await Refresh();
-        base.StateHasChanged();
     }
 
     private async Task InitializeEntities()

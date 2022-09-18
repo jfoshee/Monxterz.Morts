@@ -11,6 +11,10 @@ var baseUrl = builder.Configuration["ApiBaseUrl"] ?? builder.HostEnvironment.Bas
 builder.Services.AddGameStateClientServices(Constants.GameMasterId, baseUrl)
                 .AddBlazoredLocalStorage()
                 .AddSingleton<IEntityCache, EntityCache>()
+                .AddSingleton<NotificationSubscriptionService>()
                 .AddTransient<ICharacterFactory, CharacterFactory>();
 
-await builder.Build().RunAsync();
+var app = builder.Build();
+var notificationSubscriptionService = app.Services.GetRequiredService<NotificationSubscriptionService>();
+await notificationSubscriptionService.Start();
+await app.RunAsync();
