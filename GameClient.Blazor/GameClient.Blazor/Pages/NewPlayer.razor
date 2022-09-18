@@ -1,0 +1,68 @@
+﻿@page "/new-player"
+@inject NavigationManager navigationManager;
+@inject IGameStateClient gameStateClient;
+
+<div class="rpgui-content">
+    <div class="rpgui-container framed">
+        <h3>New Player</h3>
+        <form @onsubmit="CreateUser" class="rpgui-container framed-grey">
+            <div class="mb-3">
+                <label for="inputUserId" class="form-label">
+                    User ID
+                </label>
+                <div class="input-group has-validation">
+                    <input type="text" class="form-control @isInvalid()" id="inputUserId" @bind="userId" required>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="inputUserId" class="form-label">
+                    Display Name
+                </label>
+                <div class="input-group has-validation">
+                    <input type="text" class="form-control @isInvalid()" id="inputDisplayName" @bind="displayName" required>
+                    <div id="inputUserIdFeedback" class="invalid-feedback">
+                        @errorMessage
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary rpgui-button" @onclick="CreateUser">
+                Create
+            </button>
+        </form>
+    </div>
+</div>
+
+@code {
+    string? userId;
+    string? displayName;
+    string? errorMessage;
+
+    async Task CreateUser()
+    {
+        errorMessage = null;
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            errorMessage = "You cannot create a user with an empty User ID.";
+            return;
+        }
+        if (string.IsNullOrWhiteSpace(displayName))
+        {
+            errorMessage = "You cannot create a user with an empty Display Name.";
+            return;
+        }
+        userId = userId.Trim();
+        displayName = displayName.Trim();
+        try
+        {
+            await gameStateClient.PostUserNewAsync(userId, displayName);
+            navigationManager.NavigateTo("/login");
+        }
+        catch (ApiException apiException)
+        {
+            errorMessage = apiException.SimpleMessage();
+        }
+    }
+
+    // https://getbootstrap.com/docs/5.0/forms/validation/#server-side
+    string isInvalid() => errorMessage is not null ? "is-invalid" : "";
+}

@@ -24,6 +24,9 @@
             <button type="button" class="btn btn-primary rpgui-button" @onclick="LoginUser">
                 Login
             </button>
+            <button type="button" class="btn btn-primary rpgui-button" @onclick="GoToNewPlayer">
+                Create New Player
+            </button>
         </form>
     </div>
 </div>
@@ -62,6 +65,8 @@
             errorMessage = apiException.SimpleMessage();
         }
     }
+
+    void GoToNewPlayer() => navigationManager.NavigateTo("/new-player");
 
     // https://getbootstrap.com/docs/5.0/forms/validation/#server-side
     string isInvalid() => errorMessage is not null ? "is-invalid" : "";
