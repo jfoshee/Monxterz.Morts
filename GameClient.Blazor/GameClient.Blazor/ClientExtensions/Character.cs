@@ -1,6 +1,6 @@
 ﻿namespace GameClient.Blazor.ClientExtensions;
 
-public class Character
+public class Character : IEquatable<Character?>
 {
     private readonly IEntityCache entityCache;
     //private readonly IGameTestHarness game;
@@ -19,4 +19,32 @@ public class Character
         //this.game = game ?? throw new ArgumentNullException(nameof(game));
         Id = id ?? throw new ArgumentNullException(nameof(id));
     }
+
+    #region Equality (for testing if is selected)
+    public override bool Equals(object? obj)
+    {
+        return Equals(obj as Character);
+    }
+
+    public bool Equals(Character? other)
+    {
+        return other is not null &&
+               Id == other.Id;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Id);
+    }
+
+    public static bool operator ==(Character? left, Character? right)
+    {
+        return EqualityComparer<Character>.Default.Equals(left, right);
+    }
+
+    public static bool operator !=(Character? left, Character? right)
+    {
+        return !(left == right);
+    }
+    #endregion
 }

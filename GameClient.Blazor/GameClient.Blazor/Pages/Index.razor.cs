@@ -23,21 +23,21 @@ public partial class Index : IDisposable
     {
         get
         {
-            if (activeCell is null)
+            if (selectedLocation is null)
                 return "Tap a square in the map";
-            return activeCellCharacters.Any() ? "In the area:" : "Nobody in the area";
+            return selectedCellCharacters.Any() ? "In the area:" : "Nobody in the area";
         }
     }
 
-    private IEnumerable<Character> myCharacters => activeCellCharacters.Where(c => c.OwnerId == user!.Id);
-    private IEnumerable<Character> theirCharacters => activeCellCharacters.Where(c => c.OwnerId != user!.Id);
-    private Character? selectedCharacter => myCharacters.FirstOrDefault();
+    private IEnumerable<Character> myCharacters => selectedCellCharacters.Where(c => c.OwnerId == user!.Id);
+    private IEnumerable<Character> theirCharacters => selectedCellCharacters.Where(c => c.OwnerId != user!.Id);
 
     private GameEntityState? user;
+    private string? selectedLocation;
+    private Character? selectedCharacter;
     private ILookup<string, Character>? characterMap;
-    private List<Character> activeCellCharacters = new();
+    private List<Character> selectedCellCharacters = new();
     private string gameRegion = "";
-    private string? activeCell = null;
 
     protected override async Task OnInitializedAsync()
     {
@@ -82,8 +82,8 @@ public partial class Index : IDisposable
         var entities = entityCache.Entities;
         characterMap = characterFactory.Characters(entities!)
                                        .ToLookup(c => c.Location);
-        if (activeCell is not null)
-            activeCellCharacters = characterMap[activeCell].ToList();
+        if (selectedLocation is not null)
+            selectedCellCharacters = characterMap[selectedLocation].ToList();
     }
 
     private async Task RefreshFromServer()
@@ -137,23 +137,27 @@ public partial class Index : IDisposable
         return new MarkupString(s);
     }
 
-    string ActiveClass(string location)
+    string CssClass(Character character)
     {
-        return activeCell == location ? "active" : "";
+        return selectedCharacter == character ? "active" : "";
     }
 
-    async Task OnClick(string location)
+    string CssClassCell(string location)
+    {
+        return selectedLocation == location ? "active" : "";
+    }
+
+    private async Task SelectLocation(string location)
     {
         if (characterMap is null)
             return;
-        await Activate(location);
-    }
-
-    private async Task Activate(string location)
-    {
-        activeCell = location;
+        selectedLocation = location;
+        selectedCharacter = null;
         if (characterMap is not null)
-            activeCellCharacters = characterMap[activeCell].ToList();
+        {
+            selectedCellCharacters = characterMap[selectedLocation].ToList();
+            selectedCharacter = myCharacters.LastOrDefault();
+        }
         // Move user to the active cell so new characters will be created there
         await game.Move(user!, location);
     }
@@ -184,7 +188,7 @@ public partial class Index : IDisposable
             await game.Move(selectedCharacter.Entity, newLocation);
             RefreshFromCache();
             // Move the active cell too to make it easy to keep moving that same character
-            await Activate(newLocation);
+            await SelectLocation(newLocation);
         }
         catch (ApiException apiException)
         {
@@ -208,7 +212,7 @@ public partial class Index : IDisposable
         {
             toastService.ShowErrorRpg(apiException.SimpleMessage());
         }
-        catch(Exception exception)
+        catch (Exception exception)
         {
             toastService.ShowError(exception.Message);
         }

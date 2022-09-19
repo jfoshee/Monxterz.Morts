@@ -26,8 +26,7 @@
                 {
                     // Do not capture the loop variable in the onclick lambda
                     string location = Location(col, row);
-                    <div class="game-grid-cell @ActiveClass(location)" @onclick="_ => OnClick(location)">
-                        @*@sublocation*@
+                    <div class="game-grid-cell @CssClassCell(location)" @onclick="_ => SelectLocation(location)">
                         <span style="color: blue">
                             @Symbols(location, e => e.OwnerId == user!.Id)
                         </span>
@@ -42,7 +41,7 @@
             <h1>
                 @DetailTitle
             </h1>
-            @if (activeCellCharacters.Any())
+            @if (selectedCellCharacters.Any())
             {
                 <div class="game-detail-grid">
                     @if (selectedCharacter is not null)
@@ -69,7 +68,7 @@
                                     else
                                     {
                                         <img src="images/dumbbell.png" style="margin-left: -17px" />
-                                        
+
                                     }
                                 </button>
                             </div>
@@ -80,10 +79,11 @@
                             Mine
                         </h4>
                         <div class="rpgui-container framed game-detail-scroll">
-                            @foreach (var name in ActiveCellNames(myCharacters))
+                            @foreach (var c_loop in myCharacters)
                             {
-                                <span>
-                                    @name <br />
+                                var character = c_loop;
+                                <span class="game-character-name @CssClass(character)" @onclick="() => selectedCharacter = character">
+                                    @character.Name <br />
                                 </span>
                             }
                         </div>
@@ -106,7 +106,7 @@
                     </div>
                 </div>
             }
-            else if (activeCell is not null)
+            else if (selectedLocation is not null)
             {
                 <div>
                     <button type="button" class="rpgui-button" @onclick="NewCharacter">
