@@ -47,6 +47,7 @@
                     @if (selectedCharacter is not null)
                     {
                         <div class="framed-golden">
+                            Strength: @selectedCharacter.Strength
                             <div class="game-dpad-grid">
                                 <button type="button" class="rpgui-button dpad-grid-lf" @onclick="() => Move(0, -1)">
                                     <span>&#x1F880;</span>
@@ -68,7 +69,6 @@
                                     else
                                     {
                                         <img src="images/dumbbell.png" style="margin-left: -17px" />
-
                                     }
                                 </button>
                             </div>
