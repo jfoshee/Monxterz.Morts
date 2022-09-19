@@ -16,24 +16,25 @@ function accumulateValue(state) {
   state.activityStart = now - unusedHours * 60 * 60;
 }
 
-/** Check status and, if applicable, complete character recovery and training */
+/** Stop current activity for one of player's characters */
 export function mutate(context) {
   if (context.entities.length != 1) {
-    throw Error('CheckStatus function requires 1 Entity target');
+    throw Error('StopActivity function requires 1 Entity target.');
   }
   const entity = context.entity;
   if (entity.systemState.ownerId != context.userId) {
-    throw Error('The character does not belong to the current Player. You cannot check the status of another player\'s character.');
+    throw Error(`The character does not belong to the current Player. You cannot stop activity for another player's character.`);
   }
   const character = entity.customStatePublic[context.authorId];
-  // If not doing any activity, exit
+  // If not doing any activity, throw
   if (!character.activity) {
-    return;
+    throw Error(`The character has no current activity to stop.`);
   }
   if (character.hp <= 0) {
-    throw Error(`The character is dead and cannot complete ${character.activity}.`);
+    throw Error(`The character cannot complete activity when dead.`);
   }
-  // Convert milliseconds to seconds
-  // Rounding up to give benefit to slightly early status check
+  // Award accumulated
   accumulateValue(character);
+  character.activityStart = null;
+  character.activity = null;
 }
