@@ -48,38 +48,38 @@ public class TrainingTest
                   .WithMessage("*training*");
     }
 
-    [Theory(DisplayName = "Complete 'strength' training"), MortsTest]
-    public async Task CompleteStrength(IGameTestHarness game)
-    {
-        GameEntityState trainee = await game.Create.Character();
-        await game.Call.Train(trainee, "strength", 2);
-        await Task.Delay(2_000);
+    // [Theory(DisplayName = "Complete 'strength' training"), MortsTest]
+    // public async Task CompleteStrength(IGameTestHarness game)
+    // {
+    //     GameEntityState trainee = await game.Create.Character();
+    //     await game.Call.Train(trainee, "strength", 2);
+    //     await Task.Delay(2_000);
         
-        await game.Call.CheckStatus(trainee);
+    //     await game.Call.CheckStatus(trainee);
 
-        Assert.False(game.State(trainee).isTraining);
-        Assert.Equal(2, game.State(trainee).strength);
-        Assert.Null(game.State(trainee).trainingAttribute);
-        Assert.Null(game.State(trainee).trainingStart);
-        Assert.Null(game.State(trainee).trainingEnd);
-    }
+    //     Assert.False(game.State(trainee).isTraining);
+    //     Assert.Equal(2, game.State(trainee).strength);
+    //     Assert.Null(game.State(trainee).trainingAttribute);
+    //     Assert.Null(game.State(trainee).trainingStart);
+    //     Assert.Null(game.State(trainee).trainingEnd);
+    // }
 
-    [Theory(DisplayName = "Already complete 'strength' training"), MortsTest]
-    public async Task AlreadyCompleteStrength(IGameTestHarness game)
-    {
-        GameEntityState trainee = await game.Create.Character();
-        await game.Call.Train(trainee, "strength", 1);
-        await Task.Delay(1_500);
-        await game.Call.CheckStatus(trainee);
+    // [Theory(DisplayName = "Already complete 'strength' training"), MortsTest]
+    // public async Task AlreadyCompleteStrength(IGameTestHarness game)
+    // {
+    //     GameEntityState trainee = await game.Create.Character();
+    //     await game.Call.Train(trainee, "strength", 1);
+    //     await Task.Delay(1_500);
+    //     await game.Call.CheckStatus(trainee);
         
-        await game.Call.CheckStatus(trainee);
+    //     await game.Call.CheckStatus(trainee);
 
-        Assert.False(game.State(trainee).isTraining);
-        Assert.Equal(2, game.State(trainee).strength);
-        Assert.Null(game.State(trainee).trainingAttribute);
-        Assert.Null(game.State(trainee).trainingStart);
-        Assert.Null(game.State(trainee).trainingEnd);
-    }
+    //     Assert.False(game.State(trainee).isTraining);
+    //     Assert.Equal(2, game.State(trainee).strength);
+    //     Assert.Null(game.State(trainee).trainingAttribute);
+    //     Assert.Null(game.State(trainee).trainingStart);
+    //     Assert.Null(game.State(trainee).trainingEnd);
+    // }
 
     [Theory(DisplayName = "Recovering from Attack"), MortsTest]
     public async Task Recovering(IGameTestHarness game)

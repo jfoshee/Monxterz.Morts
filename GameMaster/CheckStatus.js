@@ -1,32 +1,33 @@
+/** Value accumulated per hour */
+const activityRates = {
+  'train': 1
+};
+
+
 /** Check status and, if applicable, complete character recovery and training */
 export function mutate(context) {
   if (context.entities.length != 1) {
-    throw Error('CheckStatus function requires 1 Entity targets: trainee');
+    throw Error('CheckStatus function requires 1 Entity target');
   }
-  const entity = context.entities[0];
+  const entity = context.entity;
   if (entity.systemState.ownerId != context.userId) {
-    throw Error('The trainee character does not belong to the current Player. You cannot train another player\'s character.');
+    throw Error('The character does not belong to the current Player. You cannot check the status of another player\'s character.');
   }
   const state = entity.customStatePublic[context.authorId];
+  // TODO: If not doing any activity, exit
   if (state.hp <= 0) {
-    throw Error('The character is dead and cannot complete training.');
+    throw Error(`The character is dead and cannot complete ${state.activity}.`);
   }
   // Convert milliseconds to seconds
   // Rounding up to give benefit to slightly early status check
   const now = Math.ceil(Date.now() / 1000);
-  // state.statusCheckTime = now;
-  if (state.trainingEnd && state.trainingEnd <= now) {
-    // Training is complete
-    state.trainingStart = 
-    state.trainingEnd = 
-    state.trainingAttribute = null;
-    state.isTraining = false;
-    // TODO: How much strength to add? training rate...
-    state.strength += 1;
-  }
-  if (state.recoveringEnd && state.recoveringEnd <= now) {
-    state.recoveringStart =
-    state.recoveringEnd = null;
-    state.isRecovering = false;
-  }
+  const elapsedSeconds = now - +state.activityStart;
+  const elapsedHours = elapsedSeconds / 60 / 60;
+  const roundedHours = Math.floor(elapsedHours);
+  const valuePerHour = activityRates[state.activity];
+  const value = roundedHours * valuePerHour;
+  state.strength = +state.strength + value;
+  // Do not cheat the player out of partial time not yet accumulated
+  const unusedHours = elapsedHours - roundedHours;
+  state.activityStart = now - unusedHours * 60 * 60;
 }
