@@ -198,14 +198,33 @@ public partial class Index : IDisposable
 
     async Task DoActivity()
     {
+        if (selectedCharacter is null)
+            return;
         try
         {
-            if (selectedCharacter is null)
-                return;
             if (!selectedCharacter.IsActive)
                 await game.Call.StartActivity(selectedCharacter.Entity, "training");
             else
                 await game.Call.StopActivity(selectedCharacter.Entity);
+            RefreshFromCache();
+        }
+        catch (ApiException apiException)
+        {
+            toastService.ShowErrorRpg(apiException.SimpleMessage());
+        }
+        catch (Exception exception)
+        {
+            toastService.ShowError(exception.Message);
+        }
+    }
+
+    async Task CheckStatus()
+    {
+        if (selectedCharacter is null)
+            return;
+        try
+        {
+            await game.Call.CheckStatus(selectedCharacter.Entity);
             RefreshFromCache();
         }
         catch (ApiException apiException)

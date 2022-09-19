@@ -3,6 +3,7 @@ const activityRates = {
   'training': 1
 };
 
+// TODO: This function copied in StopActivity.js
 function accumulateValue(state) {
   const now = Math.ceil(Date.now() / 1000);
   const elapsedSeconds = now - +state.activityStart;
@@ -10,7 +11,7 @@ function accumulateValue(state) {
   const roundedHours = Math.floor(elapsedHours);
   const valuePerHour = activityRates[state.activity];
   const value = roundedHours * valuePerHour;
-  if (Number.isNaN(state.strength)) {
+  if (isNaN(state.strength) || state.strength == 'NaN') {
     // Fix up strength that somehow became NaN
     state.strength = 1;
   }

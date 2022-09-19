@@ -74,4 +74,17 @@ public class CheckStatusTest
 
         Assert.Equal(expected, (float) game.State(trainee).strength);
     }
+
+    [Theory(DisplayName = "Check status fixes NaN String"), MortsTest]
+    public async Task FixNaNString(IGameTestHarness game)
+    {
+        GameEntityState trainee = await game.Create.Character();
+        var expected = 1;
+        await game.Call.StartActivity(trainee, "training");
+        game.State(trainee).strength = "NaN";
+
+        await game.Call.CheckStatus(trainee);
+
+        Assert.Equal(expected, (float) game.State(trainee).strength);
+    }
 }

@@ -137,7 +137,7 @@ public class MovementTest
         var region = await game.GetRegion();
         var newLocation = Region.Combine(region, "00:7F:80");
         GameEntityState character = await game.Create.Character();
-        await game.Call.StartActivity(character, "train");
+        await game.Call.StartActivity(character, "training");
         var location = character.SystemState.Location;
 
         await game.Invoking(g => (Task)g.Move(character, newLocation))

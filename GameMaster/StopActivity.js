@@ -3,6 +3,7 @@ const activityRates = {
   'training': 1
 };
 
+// TODO: This function copied in CheckStatus.js
 function accumulateValue(state) {
   const now = Math.ceil(Date.now() / 1000);
   const elapsedSeconds = now - +state.activityStart;
@@ -10,6 +11,10 @@ function accumulateValue(state) {
   const roundedHours = Math.floor(elapsedHours);
   const valuePerHour = activityRates[state.activity];
   const value = roundedHours * valuePerHour;
+  if (isNaN(state.strength) || state.strength == 'NaN') {
+    // Fix up strength that somehow became NaN
+    state.strength = 1;
+  }
   state.strength = +state.strength + value;
   // Do not cheat the player out of partial time not yet accumulated
   const unusedHours = elapsedHours - roundedHours;
