@@ -48,21 +48,24 @@
                     {
                         <div class="rpgui-container framed-grey">
                             <div>
-                                <span style="font-size: 75%;" @onclick="CheckStatus">
+                                <span style="font-size: 75%;">
                                     @selectedCharacter.StatusMessage
                                     <br />
                                     Strength: @selectedCharacter.Strength
                                 </span>
                             </div>
                             <div class="game-toolbar">
-                                <button type="button" class="rpgui-button" @onclick="() => DoActivity(Gathering)">
+                                <button type="button" class="rpgui-button" @onclick="() => DoActivity(Gathering)" disabled="@selectedCharacter.IsActive">
                                     <img src="images/gather.png" />
                                 </button>
-                                <button type="button" class="rpgui-button" @onclick="() => DoActivity(Training)">
+                                <button type="button" class="rpgui-button" @onclick="() => DoActivity(Training)" disabled="@selectedCharacter.IsActive">
                                     <img src="images/dumbbell.png" />
                                 </button>
-                                <button type="button" class="rpgui-button" @onclick="StopActivity">
+                                <button type="button" class="rpgui-button" @onclick="StopActivity" disabled="@(!selectedCharacter.IsActive)">
                                     <img src="images/stop.png" />
+                                </button>
+                                <button type="button" class="rpgui-button" @onclick="CheckStatus">
+                                    <img src="images/refresh.png" />
                                 </button>
                             </div>
                             <div class="game-dpad-grid">
