@@ -7,6 +7,9 @@ function canMove(context, oldLocation, newLocation, oldRegion, newRegion) {
     let state = context.entity.customStatePublic[context.authorId];
     if (state?.type !== 'Character')
         return;
+    if (state?.activity) {
+        throw Error(`The character may not move while ${state.activity}ing.`);
+    }
     if (oldRegion !== newRegion)
         throw Error('Changing regions is not implemented');
     CheckDistance(oldLocation, newLocation, 0);

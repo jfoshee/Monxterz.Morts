@@ -130,5 +130,22 @@ public class MovementTest
         character.SystemState.Location.Should().Be(location);
     }
 
+    [Theory(DisplayName = "Cannot move while training"), MortsTest]
+    public async Task WhileTraining(IGameTestHarness game)
+    {
+        var player = await NewPlayer(game);
+        var region = await game.GetRegion();
+        var newLocation = Region.Combine(region, "00:7F:80");
+        GameEntityState character = await game.Create.Character();
+        await game.Call.StartActivity(character, "train");
+        var location = character.SystemState.Location;
+
+        await game.Invoking(g => (Task)g.Move(character, newLocation))
+                  .Should()
+                  .ThrowAsync<Exception>()
+                  .WithMessage("*may not move while training*");
+        character.SystemState.Location.Should().Be(location);
+    }
+
     // Cannot move to another "plane"
 }
