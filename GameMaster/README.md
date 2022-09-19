@@ -16,6 +16,5 @@ The scripts are executed on a Monxterz.StatePlatform server which is a back-end 
     - initializer
 - Game test harness
   - Publish project when tests startup (not per test)
-  - game.State(xyz) return falsy for undefined state
   - inject the current player
   - get current player (updated after custom creation or function)

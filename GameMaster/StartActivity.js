@@ -27,4 +27,5 @@ export function mutate(context, activity) {
   const start = Math.round(Date.now() / 1000);
   character.activityStart = start;
   character.activity = activity;
+  // TODO: Set a status message
 }

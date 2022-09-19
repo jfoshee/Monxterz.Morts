@@ -10,6 +10,10 @@ function accumulateValue(state) {
   const roundedHours = Math.floor(elapsedHours);
   const valuePerHour = activityRates[state.activity];
   const value = roundedHours * valuePerHour;
+  if (Number.isNaN(state.strength)) {
+    // Fix up strength that somehow became NaN
+    state.strength = 1;
+  }
   state.strength = +state.strength + value;
   // Do not cheat the player out of partial time not yet accumulated
   const unusedHours = elapsedHours - roundedHours;
@@ -33,7 +37,5 @@ export function mutate(context) {
   if (character.hp <= 0) {
     throw Error(`The character is dead and cannot complete ${character.activity}.`);
   }
-  // Convert milliseconds to seconds
-  // Rounding up to give benefit to slightly early status check
   accumulateValue(character);
 }

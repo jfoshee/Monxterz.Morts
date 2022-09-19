@@ -19,7 +19,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Monxterz.StatePlatform.GameTesting" Version="1.2.0" />    
+    <PackageReference Include="Monxterz.StatePlatform.GameTesting" Version="1.3.0" />
   </ItemGroup>
 
 </Project>
