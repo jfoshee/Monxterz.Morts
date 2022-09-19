@@ -10,6 +10,9 @@ function accumulateValue(state) {
   const elapsedHours = elapsedSeconds / 60 / 60;
   const roundedHours = Math.floor(elapsedHours);
   const valuePerHour = activityRates[state.activity];
+  if (!valuePerHour) {
+    return;
+  }
   const value = roundedHours * valuePerHour;
   if (isNaN(state.strength) || state.strength == 'NaN') {
     // Fix up strength that somehow became NaN

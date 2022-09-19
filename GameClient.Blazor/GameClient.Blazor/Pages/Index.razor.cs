@@ -6,6 +6,8 @@ public partial class Index : IDisposable
     private const byte plane = 0;
     private const int gridSize = 7;
     private (int x, int y) center = (0x80, 0x80);
+    private const string Training = "training";
+    private const string Gathering = "gathering";
 
     [Inject] ILocalStorageService localStorageService { get; set; } = default!;
     [Inject] ILogoutService logoutService { get; set; } = default!;
@@ -196,16 +198,32 @@ public partial class Index : IDisposable
         }
     }
 
-    async Task DoActivity()
+    async Task DoActivity(string activity)
     {
         if (selectedCharacter is null)
             return;
         try
         {
-            if (!selectedCharacter.IsActive)
-                await game.Call.StartActivity(selectedCharacter.Entity, "training");
-            else
-                await game.Call.StopActivity(selectedCharacter.Entity);
+            await game.Call.StartActivity(selectedCharacter.Entity, activity);
+            RefreshFromCache();
+        }
+        catch (ApiException apiException)
+        {
+            toastService.ShowErrorRpg(apiException.SimpleMessage());
+        }
+        catch (Exception exception)
+        {
+            toastService.ShowError(exception.Message);
+        }
+    }
+
+    async Task StopActivity()
+    {
+        if (selectedCharacter is null)
+            return;
+        try
+        {
+            await game.Call.StopActivity(selectedCharacter.Entity);
             RefreshFromCache();
         }
         catch (ApiException apiException)

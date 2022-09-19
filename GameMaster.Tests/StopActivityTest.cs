@@ -30,4 +30,19 @@ public class StopActivityTest
 
         Assert.Equal(expected, (int)game.State(trainee).strength);
     }
+
+    [Theory(DisplayName = "Finish gathering"), MortsTest]
+    public async Task FinishGathering(IGameTestHarness game)
+    {
+        GameEntityState character = await game.Create.Character();
+        var expectedStrength = 40;
+        game.State(character).strength = expectedStrength;
+        await game.Call.StartActivity(character, "gathering");
+        game.State(character).activityStart -= 2 * 60 * 60;
+
+        await game.Call.StopActivity(character);
+
+        Assert.Equal(expectedStrength, (int)game.State(character).strength);
+        // TODO: What did we gather?
+    }
 }

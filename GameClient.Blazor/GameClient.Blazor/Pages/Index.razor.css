@@ -54,7 +54,7 @@
 
 .dpad-grid-dn {
     grid-column: 2;
-    grid-row: 3;
+    grid-row: 2;
 }
 
 .dpad-grid-lf {
@@ -74,4 +74,15 @@
 .game-character-name.active {
     color: yellow;
     font-weight: bold;
+}
+
+.game-toolbar > button > img {
+    height: 32px;
+    width: 32px;
+}
+
+.game-toolbar > button {
+    max-width: 48px;
+    padding-left: 8px;
+    padding-right: 8px;
 }
