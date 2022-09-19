@@ -45,7 +45,7 @@
             @if (activeCellCharacters.Any())
             {
                 <div class="game-detail-grid">
-                    @if (myCharacters.Any())
+                    @if (selectedCharacter is not null)
                     {
                         <div class="framed-golden">
                             <div class="game-dpad-grid">
@@ -60,6 +60,17 @@
                                 </button>
                                 <button type="button" class="rpgui-button dpad-grid-dn" @onclick="() => Move(1, +1)">
                                     <span>&#x1F883;</span>
+                                </button>
+                                <button type="button" class="rpgui-button dpad-grid-br" @onclick="() => DoActivity()">
+                                    @if (selectedCharacter.IsActive)
+                                    {
+                                        <span style="font-size: 200%; color: red;">&#11203;</span>
+                                    }
+                                    else
+                                    {
+                                        <img src="images/dumbbell.png" style="margin-left: -17px" />
+                                        
+                                    }
                                 </button>
                             </div>
                         </div>
@@ -107,4 +118,4 @@
     </div>
 </div>
 
-<BlazoredToasts  />
+<BlazoredToasts />

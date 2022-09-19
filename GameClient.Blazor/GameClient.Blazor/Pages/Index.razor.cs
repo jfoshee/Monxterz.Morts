@@ -31,6 +31,7 @@ public partial class Index : IDisposable
 
     private IEnumerable<Character> myCharacters => activeCellCharacters.Where(c => c.OwnerId == user!.Id);
     private IEnumerable<Character> theirCharacters => activeCellCharacters.Where(c => c.OwnerId != user!.Id);
+    private Character? selectedCharacter => myCharacters.FirstOrDefault();
 
     private GameEntityState? user;
     private ILookup<string, Character>? characterMap;
@@ -175,13 +176,12 @@ public partial class Index : IDisposable
     {
         try
         {
-            if (!myCharacters.Any())
+            if (selectedCharacter is null)
                 return;
-            var activeCharacter = myCharacters.First();
-            var location = activeCharacter.Location;
+            var location = selectedCharacter.Location;
             var newLocation = Region.IncrementChunk(location, axis + 5, amount);
             // game.Move updates the Entity in place
-            await game.Move(activeCharacter.Entity, newLocation);
+            await game.Move(selectedCharacter.Entity, newLocation);
             RefreshFromCache();
             // Move the active cell too to make it easy to keep moving that same character
             await Activate(newLocation);
@@ -189,6 +189,28 @@ public partial class Index : IDisposable
         catch (ApiException apiException)
         {
             toastService.ShowErrorRpg(apiException.SimpleMessage());
+        }
+    }
+
+    async Task DoActivity()
+    {
+        try
+        {
+            if (selectedCharacter is null)
+                return;
+            if (!selectedCharacter.IsActive)
+                await game.Call.StartActivity(selectedCharacter.Entity, "train");
+            else
+                await game.Call.StopActivity(selectedCharacter.Entity);
+            RefreshFromCache();
+        }
+        catch (ApiException apiException)
+        {
+            toastService.ShowErrorRpg(apiException.SimpleMessage());
+        }
+        catch(Exception exception)
+        {
+            toastService.ShowError(exception.Message);
         }
     }
 }
