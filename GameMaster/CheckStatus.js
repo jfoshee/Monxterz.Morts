@@ -1,6 +1,6 @@
 /** Value accumulated per hour */
 const activityRates = {
-  'train': 1
+  'training': 1
 };
 
 function accumulateValue(state) {
@@ -23,7 +23,7 @@ export function mutate(context) {
   }
   const entity = context.entity;
   if (entity.systemState.ownerId != context.userId) {
-    throw Error('The character does not belong to the current Player. You cannot check the status of another player\'s character.');
+    throw Error(`The character does not belong to the current Player. You cannot check the status of another player's character.`);
   }
   const character = entity.customStatePublic[context.authorId];
   // If not doing any activity, exit

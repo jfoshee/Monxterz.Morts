@@ -8,7 +8,7 @@ function canMove(context, oldLocation, newLocation, oldRegion, newRegion) {
     if (state?.type !== 'Character')
         return;
     if (state?.activity) {
-        throw Error(`The character may not move while ${state.activity}ing.`);
+        throw Error(`The character may not move while ${state.activity}.`);
     }
     if (oldRegion !== newRegion)
         throw Error('Changing regions is not implemented');

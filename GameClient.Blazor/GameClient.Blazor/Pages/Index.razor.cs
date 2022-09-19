@@ -203,7 +203,7 @@ public partial class Index : IDisposable
             if (selectedCharacter is null)
                 return;
             if (!selectedCharacter.IsActive)
-                await game.Call.StartActivity(selectedCharacter.Entity, "train");
+                await game.Call.StartActivity(selectedCharacter.Entity, "training");
             else
                 await game.Call.StopActivity(selectedCharacter.Entity);
             RefreshFromCache();

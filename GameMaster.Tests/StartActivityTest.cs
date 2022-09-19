@@ -9,9 +9,9 @@ public class StartActivityTest
         Assert.Null(game.State(trainee).activity);
         var expectedStart = DateTimeOffset.Now.ToUnixTimeSeconds();
 
-        await game.Call.StartActivity(trainee, "train");
+        await game.Call.StartActivity(trainee, "training");
         
-        Assert.Equal("train", game.State(trainee).activity);
+        Assert.Equal("training", game.State(trainee).activity);
         AssertClose(expectedStart, game.State(trainee).activityStart);
     }
 
@@ -49,12 +49,12 @@ public class StartActivityTest
     public async Task CannotGather(IGameTestHarness game)
     {
         GameEntityState trainee = await game.Create.Character();
-        await game.Call.StartActivity(trainee, "train");
+        await game.Call.StartActivity(trainee, "training");
  
-        await game.Invoking(async g => await (Task)g.Call.StartActivity(trainee, "gather"))
+        await game.Invoking(async g => await (Task)g.Call.StartActivity(trainee, "gathering"))
                   .Should()
                   .ThrowAsync<ApiException>()
-                  .WithMessage("*The character cannot gather while training*");
+                  .WithMessage("*The character cannot start gathering while already training*");
     }
 
     [Theory(DisplayName = "Cannot start Invalid Activity"), MortsTest]
@@ -62,10 +62,10 @@ public class StartActivityTest
     {
         GameEntityState trainee = await game.Create.Character();
  
-        await game.Invoking(async g => await (Task)g.Call.StartActivity(trainee, "spin"))
+        await game.Invoking(async g => await (Task)g.Call.StartActivity(trainee, "spinning"))
                   .Should()
                   .ThrowAsync<ApiException>()
-                  .WithMessage("*spin is not a valid activity*");
+                  .WithMessage("*spinning is not a valid activity*");
     }
 
     void AssertClose(long expected, dynamic actual)

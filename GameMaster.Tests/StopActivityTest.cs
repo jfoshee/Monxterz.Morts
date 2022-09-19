@@ -7,7 +7,7 @@ public class StopActivityTest
     {
         GameEntityState trainee = await game.Create.Character();
         var expected = 1;
-        await game.Call.StartActivity(trainee, "train");
+        await game.Call.StartActivity(trainee, "training");
 
         await game.Call.StopActivity(trainee);
 
@@ -22,7 +22,7 @@ public class StopActivityTest
         GameEntityState trainee = await game.Create.Character();
         game.State(trainee).strength = 40;
         var expected = 40 + 2;
-        await game.Call.StartActivity(trainee, "train");
+        await game.Call.StartActivity(trainee, "training");
         game.State(trainee).activityStart -= 2 * 60 * 60;
 
         await game.Call.StopActivity(trainee);

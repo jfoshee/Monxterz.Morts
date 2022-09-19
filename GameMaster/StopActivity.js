@@ -1,6 +1,6 @@
 /** Value accumulated per hour */
 const activityRates = {
-  'train': 1
+  'training': 1
 };
 
 function accumulateValue(state) {
