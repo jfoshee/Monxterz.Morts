@@ -166,7 +166,7 @@ public partial class Index : IDisposable
     {
         try
         {
-            await characterFactory.CreateNew();
+            selectedCharacter = await characterFactory.CreateNew();
             // The new character will be in the cache already
             RefreshFromCache();
         }
