@@ -147,16 +147,16 @@ public partial class Index : IDisposable
         return selectedLocation == location ? "active" : "";
     }
 
-    private async Task SelectLocation(string location)
+    private async Task SelectLocation(string location, Character? character = null)
     {
         if (characterMap is null)
             return;
         selectedLocation = location;
-        selectedCharacter = null;
+        selectedCharacter = character;
         if (characterMap is not null)
         {
             selectedCellCharacters = characterMap[selectedLocation].ToList();
-            selectedCharacter = myCharacters.LastOrDefault();
+            selectedCharacter ??= myCharacters.FirstOrDefault();
         }
         // Move user to the active cell so new characters will be created there
         await game.Move(user!, location);
@@ -188,7 +188,7 @@ public partial class Index : IDisposable
             await game.Move(selectedCharacter.Entity, newLocation);
             RefreshFromCache();
             // Move the active cell too to make it easy to keep moving that same character
-            await SelectLocation(newLocation);
+            await SelectLocation(newLocation, selectedCharacter);
         }
         catch (ApiException apiException)
         {
