@@ -42,4 +42,5 @@ export function mutate(context) {
   accumulateValue(character);
   character.activityStart = null;
   character.activity = null;
+  character.statusMessage = 'Idle';
 }

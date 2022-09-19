@@ -14,6 +14,7 @@ public class StopActivityTest
         Assert.Equal(expected, game.State(trainee).strength);
         Assert.Null(game.State(trainee).activity);
         Assert.Null(game.State(trainee).activityStart);
+        Assert.Equal("Idle", game.State(trainee).statusMessage);
     }
 
     [Theory(DisplayName = "Stop after training for 2 hours"), MortsTest]

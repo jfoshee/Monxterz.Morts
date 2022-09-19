@@ -1,8 +1,18 @@
 const validActivities = [
   'gathering',
   'training',
-  'recovering'
+  'recovering',
+  // protecting
+  // counterAttacking
+  // defending
 ];
+
+const statusMessages = {
+  null: 'Idle',
+  'gathering': 'Gathering grass and stones',
+  'training': 'Training: Gaining 1 Strength per Hour',
+  'recovering': 'Recovering'
+}
 
 /** Start given activity for one of player's characters */
 export function mutate(context, activity) {
@@ -27,5 +37,5 @@ export function mutate(context, activity) {
   const start = Math.round(Date.now() / 1000);
   character.activityStart = start;
   character.activity = activity;
-  // TODO: Set a status message
+  character.statusMessage = statusMessages[activity];
 }

@@ -13,6 +13,8 @@ public class Character : IEquatable<Character?>
     public string? OwnerName => Owner?.DisplayName;
     public bool IsActive => Entity.GetPublicValue<string>(Constants.GameMasterId, "activity") != null;
     public float Strength => Entity.GetPublicValue<float>(Constants.GameMasterId, "strength");
+    public string? StatusMessage => Entity.GetPublicValue<string>(Constants.GameMasterId, "statusMessage");
+
 
     public Character(IEntityCache entityCache, string id)
     {

@@ -30,6 +30,7 @@ function initState(context, entity) {
   state.isRecovering = false;
   state.recoveryTime = 10;
   state.activity = null;
+  state.statusMessage = 'Idle';
 }
 
 function initLocation(context, entity) {

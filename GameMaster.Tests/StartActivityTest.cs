@@ -7,12 +7,27 @@ public class StartActivityTest
     {
         GameEntityState trainee = await game.Create.Character();
         Assert.Null(game.State(trainee).activity);
+        Assert.Equal("Idle", game.State(trainee).statusMessage);
         var expectedStart = DateTimeOffset.Now.ToUnixTimeSeconds();
 
         await game.Call.StartActivity(trainee, "training");
         
         Assert.Equal("training", game.State(trainee).activity);
         AssertClose(expectedStart, game.State(trainee).activityStart);
+        Assert.Equal("Training: Gaining 1 Strength per Hour", game.State(trainee).statusMessage);
+    }
+
+    [Theory(DisplayName = "Start gathering"), MortsTest]
+    public async Task StartGather(IGameTestHarness game)
+    {
+        GameEntityState character = await game.Create.Character();
+        var expectedStart = DateTimeOffset.Now.ToUnixTimeSeconds();
+
+        await game.Call.StartActivity(character, "gathering");
+        
+        Assert.Equal("gathering", game.State(character).activity);
+        AssertClose(expectedStart, game.State(character).activityStart);
+        Assert.Equal("Gathering grass and stones", game.State(character).statusMessage);
     }
 
     // [Theory(DisplayName = "Check unfinished 'strength' training"), MortsTest]
