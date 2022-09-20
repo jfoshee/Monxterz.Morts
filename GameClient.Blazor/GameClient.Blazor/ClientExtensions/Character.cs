@@ -6,13 +6,16 @@ public class Character : IEquatable<Character?>
     //private readonly IGameTestHarness game;
     public string Id { get; }
     public GameEntityState Entity => entityCache[Id];
+    // TODO: If the character name is not the default show that (maybe owner in parens)
     public string Name => OwnerName ?? Entity.DisplayName ?? Id;
     public string OwnerId => Entity.SystemState.OwnerId;
     public string Location => Entity.SystemState.Location;
     public GameEntityState? Owner => entityCache.Get(Entity.SystemState.OwnerId);
     public string? OwnerName => Owner?.DisplayName;
-    public bool IsActive => Get<string>("activity") != null;
     public float Strength => Get<float>("strength");
+    public float Hp => Get<float>("hp");
+    public bool IsActive => Get<string>("activity") != null;
+    public bool IsDead => Hp == 0;
     public string? StatusMessage => Get<string>("statusMessage") ?? Get<string>("activity");
 
 

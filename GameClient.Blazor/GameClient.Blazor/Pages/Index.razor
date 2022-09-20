@@ -51,15 +51,17 @@
                                 <span style="font-size: 75%;">
                                     @selectedCharacter.StatusMessage
                                     <br />
+                                    Health: @selectedCharacter.Hp
+                                    <br />
                                     Strength: @selectedCharacter.Strength
                                 </span>
                             </div>
                             <div class="game-toolbar">
-@*
-                                <button type="button" class="rpgui-button" @onclick="() => DoActivity(Gathering)" disabled="@selectedCharacter.IsActive">
-                                    <img src="images/gather.png" />
-                                </button>
-*@
+                                @*
+                        <button type="button" class="rpgui-button" @onclick="() => DoActivity(Gathering)" disabled="@selectedCharacter.IsActive">
+                        <img src="images/gather.png" />
+                        </button>
+                        *@
                                 <button type="button" class="rpgui-button" @onclick="() => DoActivity(Training)" disabled="@selectedCharacter.IsActive">
                                     <img src="images/dumbbell.png" />
                                 </button>
@@ -94,9 +96,11 @@
                             @foreach (var c_loop in myCharacters)
                             {
                                 var character = c_loop;
-                                <span class="game-character-name @CssClass(character)" @onclick="() => selectedCharacter = character">
-                                    @character.Name <br />
-                                </span>
+                                <div @onclick="() => selectedCharacter = character">
+                                    <span class="game-character-name @CssClass(character)">
+                                        @character.Name
+                                    </span>
+                                </div>
                             }
                         </div>
                         <button type="button" class="rpgui-button" @onclick="NewCharacter">
@@ -108,14 +112,39 @@
                             Theirs
                         </h4>
                         <div class="rpgui-container framed game-detail-scroll">
-                            @foreach (var name in ActiveCellNames(theirCharacters))
+                            @foreach (var c_loop in theirCharacters)
                             {
-                                <span>
-                                    @name <br />
-                                </span>
+                                var character = c_loop;
+                                <div @onclick="() => selectedTheirCharacter = character">
+                                    <span class="game-character-name @CssClass(character)">
+                                        @character.Name
+                                    </span>
+                                </div>
                             }
                         </div>
                     </div>
+                    @if (selectedTheirCharacter is not null)
+                    {
+                        <div class="rpgui-container framed-grey">
+                            <div>
+                                <span style="font-size: 75%;">
+                                    @selectedTheirCharacter.StatusMessage
+                                    <br />
+                                    Health: @selectedTheirCharacter.Hp
+                                    <br />
+                                    Strength: @selectedTheirCharacter.Strength
+                                </span>
+                            </div>
+                            @if (selectedCharacter is not null)
+                            {
+                                <div class="game-toolbar">
+                                    <button type="button" class="rpgui-button" @onclick="Attack">
+                                        <img src="images/sword.png" />
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                    }
                 </div>
             }
             else if (selectedLocation is not null)

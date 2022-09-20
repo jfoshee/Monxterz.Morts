@@ -21,6 +21,7 @@ export function mutate(context) {
     return;
   }
   attacker.activity = 'recovering';
+  attacker.statusMessage = "Recovering (15 seconds)";
   // Convert milliseconds to seconds
   const start = Math.floor(Date.now() / 1000);
   attacker.activityStart = start;

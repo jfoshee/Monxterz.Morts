@@ -38,7 +38,7 @@
 .game-detail-grid {
     display: grid;
     width: 100%;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     /* Gap to match the padding of the container */
     gap: 12px;
 }

@@ -37,6 +37,7 @@ public partial class Index : IDisposable
     private GameEntityState? user;
     private string? selectedLocation;
     private Character? selectedCharacter;
+    private Character? selectedTheirCharacter;
     private ILookup<string, Character>? characterMap;
     private List<Character> selectedCellCharacters = new();
     private string gameRegion = "";
@@ -141,7 +142,7 @@ public partial class Index : IDisposable
 
     string CssClass(Character character)
     {
-        return selectedCharacter == character ? "active" : "";
+        return selectedCharacter == character || selectedTheirCharacter == character ? "active" : "";
     }
 
     string CssClassCell(string location)
@@ -155,6 +156,7 @@ public partial class Index : IDisposable
             return;
         selectedLocation = location;
         selectedCharacter = character;
+        selectedTheirCharacter = null;
         if (characterMap is not null)
         {
             selectedCellCharacters = characterMap[selectedLocation].ToList();
@@ -243,6 +245,25 @@ public partial class Index : IDisposable
         try
         {
             await game.Call.CheckStatus(selectedCharacter.Entity);
+            RefreshFromCache();
+        }
+        catch (ApiException apiException)
+        {
+            toastService.ShowErrorRpg(apiException.SimpleMessage());
+        }
+        catch (Exception exception)
+        {
+            toastService.ShowError(exception.Message);
+        }
+    }
+
+    async Task Attack()
+    {
+        if (selectedCharacter is null || selectedTheirCharacter is null)
+            return;
+        try
+        {
+            await game.Call.Attack(selectedCharacter.Entity, selectedTheirCharacter.Entity);
             RefreshFromCache();
         }
         catch (ApiException apiException)
