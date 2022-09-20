@@ -1,0 +1,20 @@
+﻿<div @onclick="() => Select(Character)">
+    <span class="game-character-name @CssClass">
+        @Character.Name
+        @if (Character.IsDead)
+        {
+            <span>
+                @* Skull *@
+                &#x1F480;
+            </span>
+        }
+    </span>
+</div>
+
+@code {
+    [Parameter] public Action<Character> Select { get; set; } = _ => { };
+    [Parameter] public Func<Character, bool> IsSelected { get; set; } = _ => false;
+    [Parameter] public Character Character { get; set; } = default!;
+
+    string CssClass => IsSelected(Character) ? "active" : "";
+}

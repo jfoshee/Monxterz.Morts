@@ -93,14 +93,11 @@
                             Mine
                         </h4>
                         <div class="rpgui-container framed game-detail-scroll">
-                            @foreach (var c_loop in myCharacters)
+                            @foreach (var character in myCharacters)
                             {
-                                var character = c_loop;
-                                <div @onclick="() => selectedCharacter = character">
-                                    <span class="game-character-name @CssClass(character)">
-                                        @character.Name
-                                    </span>
-                                </div>
+                                <CharacterListItem Character="character"
+                                           Select="c => { selectedCharacter = c; StateHasChanged(); }"
+                                           IsSelected="c => selectedCharacter == c" />
                             }
                         </div>
                         <button type="button" class="rpgui-button" @onclick="NewCharacter">
@@ -112,21 +109,11 @@
                             Theirs
                         </h4>
                         <div class="rpgui-container framed game-detail-scroll">
-                            @foreach (var c_loop in theirCharacters)
+                            @foreach (var character in theirCharacters)
                             {
-                                var character = c_loop;
-                                <div @onclick="() => selectedTheirCharacter = character">
-                                    <span class="game-character-name @CssClass(character)">
-                                        @character.Name
-                                        @if (character.IsDead)
-                                        {
-                                            <span>
-                                                @* Skull *@
-                                                &#x1F480;
-                                            </span>
-                                        }
-                                    </span>
-                                </div>
+                                <CharacterListItem Character="character"
+                                           Select="c => { selectedTheirCharacter = c; StateHasChanged(); }"
+                                           IsSelected="c => selectedTheirCharacter == c" />
                             }
                         </div>
                     </div>
