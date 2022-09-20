@@ -8,6 +8,7 @@ public partial class Index : IDisposable
     private (int x, int y) center = (0x80, 0x80);
     private const string Training = "training";
     private const string Gathering = "gathering";
+    private const int RecoverySeconds = 15;
 
     [Inject] ILocalStorageService localStorageService { get; set; } = default!;
     [Inject] ILogoutService logoutService { get; set; } = default!;
@@ -238,13 +239,15 @@ public partial class Index : IDisposable
         }
     }
 
-    async Task CheckStatus()
+    Task CheckStatus() => CheckStatus(selectedCharacter);
+
+    async Task CheckStatus(Character? character)
     {
-        if (selectedCharacter is null)
+        if (character is null)
             return;
         try
         {
-            await game.Call.CheckStatus(selectedCharacter.Entity);
+            await game.Call.CheckStatus(character.Entity);
             RefreshFromCache();
         }
         catch (ApiException apiException)
@@ -265,6 +268,10 @@ public partial class Index : IDisposable
         {
             await game.Call.Attack(selectedCharacter.Entity, selectedTheirCharacter.Entity);
             RefreshFromCache();
+            // HACK: Unawaited "background" task to check recovery after it is completed
+#pragma warning disable CS4014
+            Task.Delay(RecoverySeconds * 1010).ContinueWith(_ => CheckStatus(selectedCharacter));
+#pragma warning restore CS4014
         }
         catch (ApiException apiException)
         {
