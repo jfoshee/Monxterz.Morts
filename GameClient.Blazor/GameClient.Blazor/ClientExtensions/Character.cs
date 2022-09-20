@@ -17,7 +17,19 @@ public class Character : IEquatable<Character?>
     public bool IsActive => Get<string>("activity") != null;
     public bool IsDead => Hp == 0;
     public string? StatusMessage => Get<string>("statusMessage") ?? Get<string>("activity");
+    public string? AttackedById => Get<string>("attackedById");
+    public Character? AttackedBy => AttackedById is null ? null : new Character(entityCache, AttackedById);
 
+    public string AttackAttribution
+    {
+        get
+        {
+            if (AttackedById is null)
+                return "";
+            var action = IsDead ? "Killed" : "Attacked";
+            return $"{action} by {AttackedBy!.OwnerName}";
+        }
+    }
 
     public Character(IEntityCache entityCache, string id)
     {

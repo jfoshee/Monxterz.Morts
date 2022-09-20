@@ -118,6 +118,13 @@
                                 <div @onclick="() => selectedTheirCharacter = character">
                                     <span class="game-character-name @CssClass(character)">
                                         @character.Name
+                                        @if (character.IsDead)
+                                        {
+                                            <span>
+                                                @* Skull *@
+                                                &#x1F480;
+                                            </span>
+                                        }
                                     </span>
                                 </div>
                             }
@@ -133,6 +140,8 @@
                                     Health: @selectedTheirCharacter.Hp
                                     <br />
                                     Strength: @selectedTheirCharacter.Strength
+                                    <br />
+                                    @selectedTheirCharacter.AttackAttribution
                                 </span>
                             </div>
                             @if (selectedCharacter is not null)
