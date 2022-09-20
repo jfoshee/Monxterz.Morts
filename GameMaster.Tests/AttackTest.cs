@@ -53,6 +53,8 @@ public class AttackTest
 
         // Enemy's hp should be reduced by the attacker's strength
         Assert.Equal(0, game.State(defender).hp);
+        Assert.Null(game.State(defender).activity);
+        Assert.Equal("Dead", game.State(defender).statusMessage);
     }
 
     [Theory(DisplayName = "Already Dead"), MortsTest]
@@ -107,6 +109,21 @@ public class AttackTest
                   .Should()
                   .ThrowAsync<ApiException>()
                   .WithMessage("*cannot attack*player*");
+    }
+
+    [Theory(DisplayName = "Cannot attack character in another location"), MortsTest]
+    public async Task DifferentLocations(IGameTestHarness game)
+    {
+        GameEntityState defender = await game.Create.Character();
+        await game.NewCurrentPlayer();
+        GameEntityState attacker = await game.Create.Character();
+        var newLocation = Region.IncrementChunk(attacker.SystemState.Location, 6, 1);
+        await game.Move(attacker, newLocation);
+
+        await game.Invoking(async g => await (Task)g.Call.Attack(attacker, defender))
+                  .Should()
+                  .ThrowAsync<ApiException>()
+                  .WithMessage("*cannot attack* location*");
     }
 
     [Theory(DisplayName = "Recovering"), MortsTest]
