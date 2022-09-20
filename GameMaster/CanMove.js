@@ -7,6 +7,9 @@ function canMove(context, oldLocation, newLocation, oldRegion, newRegion) {
     let state = context.entity.customStatePublic[context.authorId];
     if (state?.type !== 'Character')
         return;
+    if (state.hp <= 0) {
+        throw Error(`The character is dead and cannot move!`);
+    }
     if (state?.activity) {
         throw Error(`The character may not move while ${state.activity}.`);
     }
