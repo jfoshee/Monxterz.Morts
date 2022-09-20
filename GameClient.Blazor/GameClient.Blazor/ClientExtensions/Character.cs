@@ -11,9 +11,9 @@ public class Character : IEquatable<Character?>
     public string Location => Entity.SystemState.Location;
     public GameEntityState? Owner => entityCache.Get(Entity.SystemState.OwnerId);
     public string? OwnerName => Owner?.DisplayName;
-    public bool IsActive => Entity.GetPublicValue<string>(Constants.GameMasterId, "activity") != null;
-    public float Strength => Entity.GetPublicValue<float>(Constants.GameMasterId, "strength");
-    public string? StatusMessage => Entity.GetPublicValue<string>(Constants.GameMasterId, "statusMessage");
+    public bool IsActive => Get<string>("activity") != null;
+    public float Strength => Get<float>("strength");
+    public string? StatusMessage => Get<string>("statusMessage") ?? Get<string>("activity");
 
 
     public Character(IEntityCache entityCache, string id)
@@ -21,6 +21,11 @@ public class Character : IEquatable<Character?>
         this.entityCache = entityCache ?? throw new ArgumentNullException(nameof(entityCache));
         //this.game = game ?? throw new ArgumentNullException(nameof(game));
         Id = id ?? throw new ArgumentNullException(nameof(id));
+    }
+
+    private T? Get<T>(string propertyName)
+    {
+        return Entity.GetPublicValue<T>(Constants.GameMasterId, propertyName);
     }
 
     #region Equality (for testing if is selected)
