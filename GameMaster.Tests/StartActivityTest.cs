@@ -30,35 +30,19 @@ public class StartActivityTest
         Assert.Equal("Gathering grass and stones", game.State(character).statusMessage);
     }
 
-    // [Theory(DisplayName = "Check unfinished 'strength' training"), MortsTest]
-    // public async Task ContinueStrength(IGameTestHarness game)
-    // {
-    //     GameEntityState trainee = await game.Create.Character();
-    //     await game.Call.Train(trainee, "strength", 4);
-    //     await game.Call.CheckStatus(trainee);
-    //     await Task.Delay(2_000);
-        
-    //     await game.Call.CheckStatus(trainee);
-        
-    //     Assert.True(game.State(trainee).isTraining);
-    //     Assert.Equal("strength", game.State(trainee).trainingAttribute);
-    //     Assert.NotNull(game.State(trainee).trainingStart);
-    //     Assert.NotNull(game.State(trainee).trainingEnd);
-    // }
-
-    // [Theory(DisplayName = "Cannot Attack while training"), MortsTest]
-    // public async Task CannotAttack(IGameTestHarness game)
-    // {
-    //     GameEntityState enemy = await game.Create.Character();
-    //     await game.NewCurrentPlayer();
-    //     GameEntityState trainee = await game.Create.Character();
-    //     await game.Call.Train(trainee, "strength", 1);
+    [Theory(DisplayName = "Cannot Attack while training"), MortsTest]
+    public async Task CannotAttack(IGameTestHarness game)
+    {
+        GameEntityState enemy = await game.Create.Character();
+        await game.NewCurrentPlayer();
+        GameEntityState trainee = await game.Create.Character();
+        await game.Call.StartActivity(trainee, "training");
  
-    //     await game.Invoking(async g => await (Task)g.Call.Attack(trainee, enemy))
-    //               .Should()
-    //               .ThrowAsync<ApiException>()
-    //               .WithMessage("*training*");
-    // }
+        await game.Invoking(async g => await (Task)g.Call.Attack(trainee, enemy))
+                  .Should()
+                  .ThrowAsync<ApiException>()
+                  .WithMessage("*while training*");
+    }
 
     [Theory(DisplayName = "Cannot Gather while Training"), MortsTest]
     public async Task CannotGather(IGameTestHarness game)

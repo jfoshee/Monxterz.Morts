@@ -20,8 +20,6 @@ public class CharacterTest
         Assert.Equal(0, characterState.xp);
         Assert.Equal(1, characterState.strength);
         Assert.Equal(10, characterState.recoveryTime);
-        Assert.False(characterState.isTraining);
-        Assert.False(characterState.isRecovering);
         Assert.Null(characterState.activity);
     }
 

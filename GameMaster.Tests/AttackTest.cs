@@ -72,7 +72,7 @@ public class AttackTest
         // Final attacked ID should not be replaced
         Assert.Equal("expected", game.State(defender).attackedById);
         // The attacker is not recovering (?)
-        Assert.False(game.State(attacker).isRecovering);
+        Assert.Null(game.State(attacker).activity);
     }
 
     [Theory(DisplayName = "Cannot Kill after Death"), MortsTest]
@@ -116,18 +116,18 @@ public class AttackTest
         await game.NewCurrentPlayer();
         GameEntityState attacker = await game.Create.Character();
         // Initially nobody is recovering
-        Assert.False(game.State(attacker).isRecovering);
-        Assert.False(game.State(defender).isRecovering);
+        Assert.Null(game.State(attacker).activity);
+        Assert.Null(game.State(defender).activity);
 
         await game.Call.Attack(attacker, defender);
 
         // After attack Attacker is recovering
-        Assert.True(game.State(attacker).isRecovering);
-        Assert.False(game.State(defender).isRecovering);        
+        Assert.Equal("recovering", game.State(attacker).activity);
+        Assert.Null(game.State(defender).activity);
         await game.Invoking(async g => await (Task)g.Call.Attack(attacker, defender))
                   .Should()
                   .ThrowAsync<ApiException>()
-                  .WithMessage("*cannot attack*recovering*");
+                  .WithMessage("*cannot attack while recovering*");
     }
 
     [Theory(DisplayName = "Recovered"), MortsTest]
@@ -136,34 +136,17 @@ public class AttackTest
         GameEntityState defender = await game.Create.Character();
         await game.NewCurrentPlayer();
         GameEntityState attacker = await game.Create.Character();
-        Assert.Equal(10, game.State(attacker).recoveryTime);
-        game.State(attacker).recoveryTime = 2;
+        // Assert.Equal(10, game.State(attacker).recoveryTime);
+        // game.State(attacker).recoveryTime = 2;
 
         await game.Call.Attack(attacker, defender);
-        Assert.True(game.State(attacker).isRecovering);
+        Assert.Equal("recovering", game.State(attacker).activity);
 
-        await Task.Delay(2_000);
+        // Modify recovery start time so recovery period has elapsed
+        game.State(attacker).activityStart -= 15;
         await game.Call.CheckStatus(attacker);
 
-        Assert.False(game.State(attacker).isRecovering);
+        Assert.Null(game.State(attacker).activity);
         await game.Call.Attack(attacker, defender);
-    }
-
-    [Theory(DisplayName = "Handle missing Recovery Time"), MortsTest]
-    public async Task MissingRecoveryTime(IGameTestHarness game, IGameStateClient client)
-    {
-        // Create an entity w/out recovery time
-        GameEntityState attacker = await client.PostEntityNewAsync(null) ?? throw new Exception();
-        GameEntityState defender = await game.Create.Character();
-        game.State(attacker).strength = 1;
-
-        await game.Call.Attack(attacker, defender);
-
-        Assert.True(game.State(attacker).isRecovering);
-        Assert.Equal(10, game.State(attacker).recoveryTime);
-        var expectedStart = DateTimeOffset.Now.ToUnixTimeSeconds();
-        var expectedEnd = expectedStart + 10;
-        Assert.InRange<long>(game.State(attacker).recoveringStart, expectedStart - 1, expectedStart + 1);
-        Assert.InRange<long>(game.State(attacker).recoveringEnd, expectedEnd - 1, expectedEnd + 1);
     }
 }

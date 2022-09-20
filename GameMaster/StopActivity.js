@@ -41,6 +41,9 @@ export function mutate(context) {
   if (character.hp <= 0) {
     throw Error(`The character cannot complete activity when dead.`);
   }
+  if (character.activity === 'recovering') {
+    throw Error('The character must finish recovering naturally.');
+  }
   // Award accumulated
   accumulateValue(character);
   character.activityStart = null;

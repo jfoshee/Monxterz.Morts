@@ -45,4 +45,20 @@ public class StopActivityTest
         Assert.Equal(expectedStrength, (int)game.State(character).strength);
         // TODO: What did we gather?
     }
+
+    [Theory(DisplayName = "Cannot stop recovery"), MortsTest]
+    public async Task StopRecovery(IGameTestHarness game)
+    {
+        GameEntityState character = await game.Create.Character();
+        await game.Call.StartActivity(character, "recovering");
+        var start = game.State(character).activityStart;
+
+        await game.Invoking(g => (Task)g.Call.StopActivity(character))
+                  .Should()
+                  .ThrowAsync<ApiException>()
+                  .WithMessage("*finish recovering*");
+
+        Assert.Equal("recovering", game.State(character).activity);
+        Assert.Equal(start, game.State(character).activityStart);
+    }
 }

@@ -1,3 +1,5 @@
+const recoverySeconds = 15;
+
 /** Value accumulated per hour */
 const activityRates = {
   'training': 1
@@ -41,5 +43,15 @@ export function mutate(context) {
   if (character.hp <= 0) {
     throw Error(`The character is dead and cannot complete ${character.activity}.`);
   }
-  accumulateValue(character);
+  if (character.activity === 'recovering') {
+    const now = Math.ceil(Date.now() / 1000);
+    const elapsedSeconds = now - +character.activityStart;
+    if (elapsedSeconds >= recoverySeconds) {
+      character.activityStart = null;
+      character.activity = null;
+      character.statusMessage = 'Idle';
+    }
+  } else {
+    accumulateValue(character);
+  }
 }

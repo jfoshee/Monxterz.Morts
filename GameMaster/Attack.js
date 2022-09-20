@@ -12,29 +12,23 @@ export function mutate(context) {
   if (+attacker.hp <= 0) {
     throw Error('The character cannot attack when dead.');
   }
-  if (attacker.isTraining) {
-    throw Error('The character cannot attack while training.');
-  }
-  if (attacker.isRecovering) {
-    throw Error('The character cannot attack while recovering.');
+  if (attacker.activity) {
+    throw Error(`The character cannot attack while ${attacker.activity}.`);
   }
   if (+defender.hp <= 0) {
     // The character is already dead
     defender.hp = 0;
     return;
   }
-  attacker.isRecovering = true;
-  // Handle if recoveryTime is undefined by setting to default value
-  if (isNaN(+attacker.recoveryTime)) {
-    attacker.recoveryTime = 10;
-  }
+  attacker.activity = 'recovering';
   // Convert milliseconds to seconds
-  const start = Math.round(Date.now() / 1000);
-  attacker.recoveringStart = start;
-  attacker.recoveringEnd = start + +attacker.recoveryTime;
+  const start = Math.floor(Date.now() / 1000);
+  attacker.activityStart = start;
   defender.hp -= attacker.strength;
   if (defender.hp < 0) {
     defender.hp = 0;
+    // TODO: To be fair to defender, should accumulate any resources that were gathered until time of death
+    defender.activity = null;
   }
   defender.attackedById = attackerEntity.id;
 }
