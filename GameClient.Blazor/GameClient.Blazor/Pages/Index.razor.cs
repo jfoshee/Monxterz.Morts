@@ -73,12 +73,31 @@ public partial class Index : IDisposable
 
     Task Logout() => logoutService.Logout();
 
-    private void OnEntityChanged(string id)
+    private void OnEntityChanged(string id, GameEntityState? stale, GameEntityState updated)
     {
         // Entity Cache should be up to date at this point
         RefreshFromCache();
+        ShowToastForChange(stale, updated);
         // https://learn.microsoft.com/en-us/aspnet/core/blazor/components/rendering?view=aspnetcore-6.0#receiving-a-call-from-something-external-to-the-blazor-rendering-and-event-handling-system
         InvokeAsync(StateHasChanged);
+    }
+
+    private void ShowToastForChange(GameEntityState? stale, GameEntityState updated)
+    {
+        // Pop toast for attacks from other players
+        if (stale is not null && stale.IsCharacter())
+        {
+            // We can't use `Character` to get the stale HP because Character just wraps the entityCache which is already updated
+            var staleHp = stale.GetPublicValue<float>(Constants.GameMasterId, "hp");
+            var character = new Character(entityCache, updated.Id!);
+            var updatedHp = character.Hp;
+            if (updatedHp < staleHp)
+            {
+                var damage = staleHp - updatedHp;
+                var deathImminent = (updatedHp > 0 && updatedHp < damage) ? "Death is imminent!" : "";
+                toastService.ShowInfoRpg($"{character.Name} was {character.AttackAttribution}! {damage} Damage! {deathImminent}");
+            }
+        }
     }
 
     private void RefreshFromCache()
