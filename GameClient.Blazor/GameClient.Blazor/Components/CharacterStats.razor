@@ -1,0 +1,15 @@
+﻿<div>
+    <span style="font-size: 75%;">
+        @Character?.StatusMessage
+        <br />
+        Health: @Character?.Hp
+        <br />
+        Strength: @Character?.Strength
+        <br />
+        @Character?.AttackAttribution
+    </span>
+</div>
+
+@code {
+    [Parameter] public Character? Character { get; set; }
+}

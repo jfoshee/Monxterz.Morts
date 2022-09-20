@@ -85,18 +85,17 @@ public partial class Index : IDisposable
     private void ShowToastForChange(GameEntityState? stale, GameEntityState updated)
     {
         // Pop toast for attacks from other players
-        if (stale is not null && stale.IsCharacter())
+        if (stale is null || !stale.IsCharacter())
+            return;
+        // We can't use `Character` to get the stale HP because Character just wraps the entityCache which is already updated
+        var staleHp = stale.GetPublicValue<float>(Constants.GameMasterId, "hp");
+        var character = new Character(entityCache, updated.Id!);
+        var updatedHp = character.Hp;
+        if (updatedHp < staleHp)
         {
-            // We can't use `Character` to get the stale HP because Character just wraps the entityCache which is already updated
-            var staleHp = stale.GetPublicValue<float>(Constants.GameMasterId, "hp");
-            var character = new Character(entityCache, updated.Id!);
-            var updatedHp = character.Hp;
-            if (updatedHp < staleHp)
-            {
-                var damage = staleHp - updatedHp;
-                var deathImminent = (updatedHp > 0 && updatedHp < damage) ? "Death is imminent!" : "";
-                toastService.ShowInfoRpg($"{character.Name} was {character.AttackAttribution}! {damage} Damage! {deathImminent}");
-            }
+            var damage = staleHp - updatedHp;
+            var deathImminent = (updatedHp > 0 && updatedHp < damage) ? "Death is imminent!" : "";
+            toastService.ShowInfoRpg($"{character.Name} was {character.AttackAttribution}! {damage} Damage! {deathImminent}");
         }
     }
 

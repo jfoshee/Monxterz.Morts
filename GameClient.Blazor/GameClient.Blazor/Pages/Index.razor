@@ -47,15 +47,7 @@
                     @if (selectedCharacter is not null)
                     {
                         <div class="rpgui-container framed-grey">
-                            <div>
-                                <span style="font-size: 75%;">
-                                    @selectedCharacter.StatusMessage
-                                    <br />
-                                    Health: @selectedCharacter.Hp
-                                    <br />
-                                    Strength: @selectedCharacter.Strength
-                                </span>
-                            </div>
+                            <CharacterStats Character="selectedCharacter" />
                             <div class="game-toolbar">
                                 @*
                         <button type="button" class="rpgui-button" @onclick="() => DoActivity(Gathering)" disabled="@selectedCharacter.IsActive">
@@ -120,17 +112,7 @@
                     @if (selectedTheirCharacter is not null)
                     {
                         <div class="rpgui-container framed-grey">
-                            <div>
-                                <span style="font-size: 75%;">
-                                    @selectedTheirCharacter.StatusMessage
-                                    <br />
-                                    Health: @selectedTheirCharacter.Hp
-                                    <br />
-                                    Strength: @selectedTheirCharacter.Strength
-                                    <br />
-                                    @selectedTheirCharacter.AttackAttribution
-                                </span>
-                            </div>
+                            <CharacterStats Character="selectedTheirCharacter" />
                             @if (selectedCharacter is not null)
                             {
                                 <div class="game-toolbar">
