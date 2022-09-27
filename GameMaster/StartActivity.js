@@ -20,8 +20,7 @@ export function mutate(context, activity) {
     throw Error(`The character cannot start ${activity} while already ${character.activity}.`);
   }
   // Convert milliseconds to seconds
-  const start = Math.round(Date.now() / 1000);
-  character.activityStart = start;
+  character.activityStart = nowSeconds();
   character.activity = activity;
   character.statusMessage = statusMessages[activity];
 }

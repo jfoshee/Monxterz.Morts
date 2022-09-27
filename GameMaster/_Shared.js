@@ -5,9 +5,14 @@ export function isDead(characterState) {
   return +characterState.hp <= 0;
 }
 
-// TODO: This function copied in StopActivity.js
+/** Returns number of whole elapsed seconds since the epoch */
+export function nowSeconds() {
+  // Convert milliseconds to seconds
+  return Math.floor(Date.now() / 1000);
+}
+
 export function accumulateValue(state) {
-  const now = Math.ceil(Date.now() / 1000);
+  const now = nowSeconds();
   const elapsedSeconds = now - +state.activityStart;
   const elapsedHours = elapsedSeconds / 60 / 60;
   const roundedHours = Math.floor(elapsedHours);

@@ -1,4 +1,4 @@
-/// <reference path="_Constants.js" />
+/// <reference path="_Shared.js" />
 
 /** Initializes a new Character */
 function initialize(context) {
@@ -15,11 +15,10 @@ function Cooldown(context) {
   userState = game.state(user);
   const delayMinutes = newCharacterCooldownMinutes;
   const delaySeconds = 60 * delayMinutes;
-  const nowSeconds = Math.floor(Date.now() / 1000);
-  if (userState.characterCreatedAt && +userState.characterCreatedAt + delaySeconds > nowSeconds) {
+  if (userState.characterCreatedAt && +userState.characterCreatedAt + delaySeconds > nowSeconds()) {
     throw Error(`⏳ You must wait ${newCharacterCooldownMinutes} minutes between creating each New Character.`);
   }
-  userState.characterCreatedAt = nowSeconds;
+  userState.characterCreatedAt = nowSeconds();
 }
 
 function initState(context, entity) {

@@ -18,8 +18,7 @@ export function mutate(context) {
     throw Error(`The character is dead and cannot complete ${character.activity}.`);
   }
   if (character.activity === 'recovering') {
-    const now = Math.ceil(Date.now() / 1000);
-    const elapsedSeconds = now - +character.activityStart;
+    const elapsedSeconds = nowSeconds() - +character.activityStart;
     if (elapsedSeconds >= recoverySeconds) {
       character.activityStart = null;
       character.activity = null;

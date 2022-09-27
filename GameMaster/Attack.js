@@ -28,9 +28,7 @@ export function mutate(context) {
   }
   attacker.activity = 'recovering';
   attacker.statusMessage = statusMessages[attacker.activity];
-  // Convert milliseconds to seconds
-  const start = Math.floor(Date.now() / 1000);
-  attacker.activityStart = start;
+  attacker.activityStart = nowSeconds();
   defender.hp -= attacker.strength;
   if (isDead(defender)) {
     defender.hp = 0;
