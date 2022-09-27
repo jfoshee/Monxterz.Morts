@@ -45,11 +45,11 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "publish",
+            "label": "test",
             "command": "dotnet",
             "type": "process",
             "args": [
-                "publish",
+                "test",
                 "${workspaceFolder}/GameMaster.Tests/GameMaster.Tests.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
@@ -57,16 +57,16 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "watch",
+            "label": "watch test",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "watch",
-                "run",
+                "test",
                 "--project",
-                "${workspaceFolder}/GameMaster.Tests/GameMaster.Tests.csproj"
+                "${workspaceFolder}/GameMaster.Tests/GameMaster.Tests.csproj",
             ],
             "problemMatcher": "$msCompile"
         }
-    ]
+   ]
 }
