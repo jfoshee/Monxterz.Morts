@@ -22,9 +22,7 @@ const validActivities = [
   'gathering',
   'training',
   'recovering',
-  // protecting
-  // 'counterAttacking'
-  // 'defending'
+  'defending'
 ];
 
 const statusMessages = {
@@ -32,7 +30,8 @@ const statusMessages = {
   'gathering': 'Gathering grass and stones',
   'training': 'Training: Gaining 1 Strength per Hour',
   'recovering': 'Recovering (15 seconds)',
-  // 'defending': 'Defending self and prepared to counter-attack!'
+  'defending': 'Defending self and prepared to counter-attack!',
+  'dead': 'Dead'
 }
 
 /** Harness for accessing Game state */

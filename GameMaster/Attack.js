@@ -29,12 +29,24 @@ export function mutate(context) {
   attacker.activity = 'recovering';
   attacker.statusMessage = statusMessages[attacker.activity];
   attacker.activityStart = nowSeconds();
+  // Attack: attacker => defender
+  updateAttackStats(attackerEntity, defenderEntity);
+  // If defender is not dead, has chance to defend self
+  if (!isDead(defender) && defender.activity === 'defending') {
+    // Counter-Attack: defender => attacker
+    updateAttackStats(defenderEntity, attackerEntity);
+  }
+}
+
+function updateAttackStats(attackerEntity, defenderEntity) {
+  const attacker = game.state(attackerEntity);
+  const defender = game.state(defenderEntity);
   defender.hp -= attacker.strength;
+  defender.attackedById = attackerEntity.id;
   if (isDead(defender)) {
     defender.hp = 0;
     // TODO: To be fair to defender, should accumulate any resources that were gathered until time of death
     defender.activity = null;
-    defender.statusMessage = 'Dead';
+    defender.statusMessage = statusMessages['dead'];
   }
-  defender.attackedById = attackerEntity.id;
 }

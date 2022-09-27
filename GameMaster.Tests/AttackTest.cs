@@ -166,4 +166,56 @@ public class AttackTest
         Assert.Null(game.State(attacker).activity);
         await game.Call.Attack(attacker, defender);
     }
+
+    [Theory(DisplayName = "Defender Auto Counter-Attack"), MortsTest]
+    public async Task AutoCounterAttack(IGameTestHarness game)
+    {
+        GameEntityState defender = await game.Create.Character();
+        game.State(defender).strength = 95;
+        await game.Call.StartActivity(defender, "defending");
+        await game.NewCurrentPlayer();
+        GameEntityState attacker = await game.Create.Character();
+
+        await game.Call.Attack(attacker, defender);
+
+        Assert.Equal(99, game.State(defender).hp);
+        Assert.Equal(5, game.State(attacker).hp);
+        Assert.Equal(defender.Id, game.State(attacker).attackedById);
+    }
+
+    [Theory(DisplayName = "Counter-Attack Kills Attacker"), MortsTest]
+    public async Task FatalCounterAttack(IGameTestHarness game)
+    {
+        GameEntityState defender = await game.Create.Character();
+        game.State(defender).strength = 101;
+        await game.Call.StartActivity(defender, "defending");
+        await game.NewCurrentPlayer();
+        GameEntityState attacker = await game.Create.Character();
+
+        await game.Call.Attack(attacker, defender);
+
+        Assert.Equal(99, game.State(defender).hp);
+        Assert.Equal(0, game.State(attacker).hp);
+        Assert.Null(game.State(attacker).activity);
+        Assert.Equal("Dead", game.State(attacker).statusMessage);
+        Assert.Equal(defender.Id, game.State(attacker).attackedById);
+    }
+
+    [Theory(DisplayName = "Dead Defender Cannot Counter-Attack"), MortsTest]
+    public async Task CannotCounterAttack(IGameTestHarness game)
+    {
+        GameEntityState defender = await game.Create.Character();
+        game.State(defender).strength = 95;
+        game.State(defender).hp = 1;
+        await game.Call.StartActivity(defender, "defending");
+        await game.NewCurrentPlayer();
+        GameEntityState attacker = await game.Create.Character();
+
+        await game.Call.Attack(attacker, defender);
+
+        Assert.Equal(0, game.State(defender).hp);
+        Assert.Equal("Dead", game.State(defender).statusMessage);
+        Assert.Equal(100, game.State(attacker).hp);
+        Assert.Null(game.State(attacker).attackedById);
+    }
 }
