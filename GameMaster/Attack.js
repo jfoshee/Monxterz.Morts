@@ -1,3 +1,5 @@
+/// <reference path="_Shared.js" />
+
 /** Attack an enemy in the same battle */
 export function mutate(context) {
   if (context.entities.length != 2) {
@@ -13,13 +15,13 @@ export function mutate(context) {
   if (attackerEntity.systemState.location !== defenderEntity.systemState.location) {
     throw Error('The character cannot attack a defender in another location.');
   }
-  if (+attacker.hp <= 0) {
+  if (isDead(attacker)) {
     throw Error('The character cannot attack when dead.');
   }
   if (attacker.activity) {
     throw Error(`The character cannot attack while ${attacker.activity}.`);
   }
-  if (+defender.hp <= 0) {
+  if (isDead(defender)) {
     // The character is already dead
     defender.hp = 0;
     return;

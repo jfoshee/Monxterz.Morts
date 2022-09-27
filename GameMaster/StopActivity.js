@@ -1,3 +1,5 @@
+/// <reference path="_Shared.js" />
+
 /** Value accumulated per hour */
 const activityRates = {
   'training': 1
@@ -38,7 +40,7 @@ export function mutate(context) {
   if (!character.activity) {
     throw Error(`The character has no current activity to stop.`);
   }
-  if (character.hp <= 0) {
+  if (isDead(character)) {
     throw Error(`The character cannot complete activity when dead.`);
   }
   if (character.activity === 'recovering') {

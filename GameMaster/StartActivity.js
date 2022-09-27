@@ -1,17 +1,20 @@
+/// <reference path="_Shared.js" />
+
 const validActivities = [
   'gathering',
   'training',
   'recovering',
   // protecting
-  // counterAttacking
-  // defending
+  // 'counterAttacking'
+  // 'defending'
 ];
 
 const statusMessages = {
   null: 'Idle',
   'gathering': 'Gathering grass and stones',
   'training': 'Training: Gaining 1 Strength per Hour',
-  'recovering': 'Recovering'
+  'recovering': 'Recovering',
+  // 'defending': 'Defending self and prepared to counter-attack!'
 }
 
 /** Start given activity for one of player's characters */
@@ -27,7 +30,7 @@ export function mutate(context, activity) {
     throw Error(`The character does not belong to the current Player. You cannot start ${activity} with another player's character.`);
   }
   const character = entity.customStatePublic[context.authorId];
-  if (character.hp <= 0) {
+  if (isDead(character)) {
     throw Error(`The character cannot start ${activity} when dead.`);
   }
   if (character.activity) {

@@ -1,3 +1,5 @@
+/// <reference path="_Shared.js" />
+
 /** 
  * Determines whether an attempted move is allowed. 
  * Enforces 2D Cartesian grid movement.
@@ -7,7 +9,7 @@ function canMove(context, oldLocation, newLocation, oldRegion, newRegion) {
     let state = context.entity.customStatePublic[context.authorId];
     if (state?.type !== 'Character')
         return;
-    if (state.hp <= 0) {
+    if (isDead(state)) {
         throw Error(`The character is dead and cannot move!`);
     }
     if (state?.activity) {
