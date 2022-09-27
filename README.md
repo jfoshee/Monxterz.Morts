@@ -31,16 +31,16 @@ if (isDead(defender)) {
 ### Back-End Script Integration Tests
 
 The platform makes testing these scripts straightforward. 
-he tests are written in C# to match the rest of the stack. 
+The tests are written in C# to match the rest of the stack. 
 This might seem a little strange, but these tests use a generated C# GameStateClient which can also be used in the Game UI itself.
 
 #### [CharacterTest.cs](GameMaster.Tests/CharacterTest.cs)
 ```cs
-  GameEntityState character = await game.Create.Character();
-  var characterState = game.State(character);
-  Assert.Equal("Character", characterState.type);
-  Assert.Equal(100, characterState.hp);
-  Assert.Equal(0, characterState.xp);
+GameEntityState character = await game.Create.Character();
+var characterState = game.State(character);
+Assert.Equal("Character", characterState.type);
+Assert.Equal(100, characterState.hp);
+Assert.Equal(0, characterState.xp);
 ```
 
 #### [AttackTest.cs](GameMaster.Tests/AttackTest.cs)
@@ -52,6 +52,22 @@ await game.Call.Attack(attacker, defender);
 
 // Enemy's hp should be reduced by the attacker's strength
 Assert.Equal(4, game.State(defender).hp);
+```
+
+### Front-End Game Client
+
+You can use the game engine of your choice for the front-end. 
+This example uses Blazor because it makes for very rapid development for me. 
+I have Unity examples as well.
+
+#### [Index.razor.cs](GameClient.Blazor/GameClient.Blazor/Pages/Index.razor.cs)
+```cs
+async Task Attack()
+{
+    ...
+    await game.Call.Attack(selectedCharacter.Entity, selectedTheirCharacter.Entity);
+    ...
+}
 ```
 
 ### Terminology
