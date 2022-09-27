@@ -57,6 +57,9 @@
                                 <button type="button" class="rpgui-button" @onclick="() => DoActivity(Training)" disabled="@selectedCharacter.IsActive">
                                     <img src="images/dumbbell.png" />
                                 </button>
+                                <button type="button" class="rpgui-button" @onclick="() => DoActivity(Defending)" disabled="@selectedCharacter.IsActive">
+                                    <img src="images/shield.png" />
+                                </button>
                                 <button type="button" class="rpgui-button" @onclick="StopActivity" disabled="@(!selectedCharacter.IsActive)">
                                     <img src="images/stop.png" />
                                 </button>

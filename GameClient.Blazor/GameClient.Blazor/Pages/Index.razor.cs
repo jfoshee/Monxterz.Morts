@@ -7,6 +7,7 @@ public partial class Index : IDisposable
     private const int gridSize = 7;
     private (int x, int y) center = (0x80, 0x80);
     private const string Training = "training";
+    private const string Defending = "defending";
     private const string Gathering = "gathering";
     private const int RecoverySeconds = 15;
 
