@@ -26,9 +26,8 @@ function CheckDistance(oldLocation, newLocation, axis) {
     const oldPosition = getPosition(oldLocation, axis);
     const newPosition = getPosition(newLocation, axis);
     const distance = Math.abs(newPosition - oldPosition);
-    const maxDistance = 1;
-    if (distance > maxDistance)
-        throw Error(`May not move more than ${maxDistance}, but attempted to move ${distance}`);
+    if (distance > maxMoveDistance)
+        throw Error(`May not move more than ${maxMoveDistance}, but attempted to move ${distance}`);
 }
 
 function getPosition(location, axis) {

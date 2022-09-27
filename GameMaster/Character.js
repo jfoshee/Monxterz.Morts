@@ -1,3 +1,5 @@
+/// <reference path="_Constants.js" />
+
 /** Initializes a new Character */
 function initialize(context) {
   Cooldown(context);
@@ -11,11 +13,11 @@ function initialize(context) {
 function Cooldown(context) {
   const user = context.user;
   userState = user.customStatePublic[context.authorId];
-  const delayMinutes = 5;
+  const delayMinutes = newCharacterCooldownMinutes;
   const delaySeconds = 60 * delayMinutes;
   const nowSeconds = Math.floor(Date.now() / 1000);
   if (userState.characterCreatedAt && +userState.characterCreatedAt + delaySeconds > nowSeconds) {
-    throw Error('⏳ You must wait 5 minutes between creating each New Character.');
+    throw Error(`⏳ You must wait ${newCharacterCooldownMinutes} minutes between creating each New Character.`);
   }
   userState.characterCreatedAt = nowSeconds;
 }
@@ -28,7 +30,7 @@ function initState(context, entity) {
   state.strength = 1;
   state.recoveryTime = 10;
   state.activity = null;
-  state.statusMessage = 'Idle';
+  state.statusMessage = statusMessages[null];
 }
 
 function initLocation(context, entity) {

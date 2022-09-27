@@ -27,16 +27,16 @@ export function mutate(context) {
     return;
   }
   attacker.activity = 'recovering';
-  attacker.statusMessage = "Recovering (15 seconds)";
+  attacker.statusMessage = statusMessages[attacker.activity];
   // Convert milliseconds to seconds
   const start = Math.floor(Date.now() / 1000);
   attacker.activityStart = start;
   defender.hp -= attacker.strength;
-  if (defender.hp < 0) {
+  if (isDead(defender)) {
     defender.hp = 0;
     // TODO: To be fair to defender, should accumulate any resources that were gathered until time of death
     defender.activity = null;
-    defender.statusMessage = "Dead";
+    defender.statusMessage = 'Dead';
   }
   defender.attackedById = attackerEntity.id;
 }

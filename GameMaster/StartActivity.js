@@ -1,22 +1,5 @@
 /// <reference path="_Shared.js" />
 
-const validActivities = [
-  'gathering',
-  'training',
-  'recovering',
-  // protecting
-  // 'counterAttacking'
-  // 'defending'
-];
-
-const statusMessages = {
-  null: 'Idle',
-  'gathering': 'Gathering grass and stones',
-  'training': 'Training: Gaining 1 Strength per Hour',
-  'recovering': 'Recovering',
-  // 'defending': 'Defending self and prepared to counter-attack!'
-}
-
 /** Start given activity for one of player's characters */
 export function mutate(context, activity) {
   if (context.entities.length != 1) {
