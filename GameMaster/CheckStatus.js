@@ -1,3 +1,5 @@
+/// <reference path="_Shared.js" />
+
 const recoverySeconds = 15;
 
 /** Value accumulated per hour */
@@ -40,7 +42,7 @@ export function mutate(context) {
   if (!character.activity) {
     return;
   }
-  if (character.hp <= 0) {
+  if (isDead(character)) {
     throw Error(`The character is dead and cannot complete ${character.activity}.`);
   }
   if (character.activity === 'recovering') {

@@ -1,5 +1,6 @@
 {
   "GameMasterEntityId": "morts-game-master",
   "GameMasterDisplayName": "MORTS Game Master",
-  "ScriptExtension": ".js"
+  "ScriptExtension": ".js",
+  "IgnorePattern":  "_*.js"
 }
