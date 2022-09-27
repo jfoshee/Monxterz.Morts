@@ -6,7 +6,7 @@
  * Throws an error for illegal moves.
  */
 function canMove(context, oldLocation, newLocation, oldRegion, newRegion) {
-    let state = context.entity.customStatePublic[context.authorId];
+    let state = game.state(context.entity);
     if (state?.type !== 'Character')
         return;
     if (isDead(state)) {

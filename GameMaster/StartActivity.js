@@ -12,7 +12,7 @@ export function mutate(context, activity) {
   if (entity.systemState.ownerId != context.userId) {
     throw Error(`The character does not belong to the current Player. You cannot start ${activity} with another player's character.`);
   }
-  const character = entity.customStatePublic[context.authorId];
+  const character = game.state(entity);
   if (isDead(character)) {
     throw Error(`The character cannot start ${activity} when dead.`);
   }

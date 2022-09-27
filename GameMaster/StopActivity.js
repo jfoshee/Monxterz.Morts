@@ -9,7 +9,7 @@ export function mutate(context) {
   if (entity.systemState.ownerId != context.userId) {
     throw Error(`The character does not belong to the current Player. You cannot stop activity for another player's character.`);
   }
-  const character = entity.customStatePublic[context.authorId];
+  const character = game.state(entity);
   // If not doing any activity, throw
   if (!character.activity) {
     throw Error(`The character has no current activity to stop.`);

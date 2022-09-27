@@ -6,9 +6,9 @@ export function mutate(context) {
     throw Error('Attack function requires 2 Entity targets: attacker, defender');
   }
   const attackerEntity = context.entities[0];
-  const attacker = attackerEntity.customStatePublic[context.authorId];
+  const attacker = game.state(attackerEntity);
   const defenderEntity = context.entities[1];
-  const defender = defenderEntity.customStatePublic[context.authorId];
+  const defender = game.state(defenderEntity);
   if (attackerEntity.systemState.ownerId !== context.userId) {
     throw Error('The attacker character does not belong to the current Player. You cannot attack with another player\'s character.');
   }

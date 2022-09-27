@@ -1,3 +1,9 @@
+/**
+ * The Game Master ID
+ * This must match configuration in <monxterz.proj.json>
+ */
+const GameMasterEntityId = "morts-game-master";
+
 /** Character creation */
 const newCharacterCooldownMinutes = 5;
 
@@ -28,3 +34,11 @@ const statusMessages = {
   'recovering': 'Recovering (15 seconds)',
   // 'defending': 'Defending self and prepared to counter-attack!'
 }
+
+/** Harness for accessing Game state */
+const game = {
+  /** Returns the public state for this game for the given entity */
+  state: function(entity) {
+    return entity.customStatePublic[GameMasterEntityId];
+  }
+};

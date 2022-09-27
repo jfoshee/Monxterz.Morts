@@ -12,7 +12,7 @@ function initialize(context) {
 /** Cooldown for character creation */
 function Cooldown(context) {
   const user = context.user;
-  userState = user.customStatePublic[context.authorId];
+  userState = game.state(user);
   const delayMinutes = newCharacterCooldownMinutes;
   const delaySeconds = 60 * delayMinutes;
   const nowSeconds = Math.floor(Date.now() / 1000);
@@ -23,7 +23,7 @@ function Cooldown(context) {
 }
 
 function initState(context, entity) {
-  let state = entity.customStatePublic[context.authorId];
+  let state = game.state(entity);
   state.type = 'Character';
   state.hp = 100;
   state.xp = 0;
@@ -36,6 +36,9 @@ function initState(context, entity) {
 function initLocation(context, entity) {
   const author = context.author;
   let region = author.systemState.controlledRegion;
+  if (!region) {
+    throw Error('The Game Master does not have a Controlled Region.');
+  }
   region = region.replace('::', ':');
   const user = context.user;
   // TODO: Check user location has 3 chunks in subregion
