@@ -91,10 +91,15 @@ public partial class Index : IDisposable
         // We can't use `Character` to get the stale HP because Character just wraps the entityCache which is already updated
         var staleHp = stale.GetPublicValue<float>(Constants.GameMasterId, "hp");
         var character = new Character(entityCache, updated.Id!);
+        NotifyHpChange(staleHp, character);
+    }
+
+    private void NotifyHpChange(float initialHp, Character character)
+    {
         var updatedHp = character.Hp;
-        if (updatedHp < staleHp)
+        if (updatedHp < initialHp)
         {
-            var damage = staleHp - updatedHp;
+            var damage = initialHp - updatedHp;
             var deathImminent = (updatedHp > 0 && updatedHp < damage) ? "Death is imminent!" : "";
             toastService.ShowInfoRpg($"{character.Name} was {character.AttackAttribution}! {damage} Damage! {deathImminent}");
         }
@@ -283,6 +288,8 @@ public partial class Index : IDisposable
     {
         if (selectedCharacter is null || selectedTheirCharacter is null)
             return;
+        var initialFriendlyHp = selectedCharacter.Hp;
+        var initialEnemyHp = selectedTheirCharacter.Hp;
         try
         {
             await game.Call.Attack(selectedCharacter.Entity, selectedTheirCharacter.Entity);
@@ -300,5 +307,10 @@ public partial class Index : IDisposable
         {
             toastService.ShowError(exception.Message);
         }
+        // Must manually post notifications for changes we initiated
+        // because game.Call.Attack will update the entities in place
+        // so our own notification hook ShowToastForChange won't detect a change
+        NotifyHpChange(initialEnemyHp, selectedTheirCharacter);
+        NotifyHpChange(initialFriendlyHp, selectedCharacter);
     }
 }
