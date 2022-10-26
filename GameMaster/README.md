@@ -9,7 +9,7 @@ The scripts are executed on a Monxterz.StatePlatform server which is a back-end 
 
 - CLI
   - Init
-    - creates a new monxterz.proj.json
+    - creates a new gamemaster.json
     - creates the unit test project
   - New script
     - mutator

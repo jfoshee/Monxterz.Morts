@@ -2,14 +2,12 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "gs-push",
+            "label": "gamemaster publish local",
             "type": "shell",
-            "windows": {
-                "command": "D:/Source/Monxterz.StatePlatform/Monxterz.StatePlatform.Cli/bin/Debug/net6.0/gs-push.exe",
-            },
-            "osx": {
-                "command": "/Users/jfoshee/Github/Monxterz.StatePlatform/Monxterz.StatePlatform.Cli/bin/Debug/net6.0/gs-push",
-            },
+            "command": "dotnet",
+            "args": [
+                "gamemaster"
+            ],
             "options": {
                 "cwd": "GameMaster"
             },
@@ -24,15 +22,11 @@
             "problemMatcher": []
         },
         {
-            "label": "gs-push production",
+            "label": "gamemaster publish production",
             "type": "shell",
-            "windows": {
-                "command": "D:/Source/Monxterz.StatePlatform/Monxterz.StatePlatform.Cli/bin/Debug/net6.0/gs-push.exe",
-            },
-            "osx": {
-                "command": "/Users/jfoshee/Github/Monxterz.StatePlatform/Monxterz.StatePlatform.Cli/bin/Debug/net6.0/gs-push",
-            },
+            "command": "dotnet",
             "args": [
+                "gamemaster",
                 "https://statemgmt-app.azurewebsites.net"
             ],
             "options": {
