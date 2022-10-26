@@ -7,10 +7,13 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 var baseUrl = builder.Configuration["ApiBaseUrl"] ?? builder.HostEnvironment.BaseAddress;
+var notificationsUrl = builder.Configuration["NotificationsUrl"] ?? baseUrl;
+var notificationOptions = new NotificationOptions { NotificationsUrl = notificationsUrl };
 builder.Services.AddGameStateClientServices(Constants.GameMasterId, baseUrl)
                 .AddBlazoredLocalStorage()
                 .AddBlazoredToast()
                 .AddSingleton<IEntityCache, EntityCache>()
+                .AddSingleton(notificationOptions)
                 .AddSingleton<NotificationSubscriptionService>()
                 .AddTransient<ICharacterFactory, CharacterFactory>()
                 .AddTransient<ILoginService, LoginService>()
